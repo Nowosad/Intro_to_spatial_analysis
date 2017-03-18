@@ -1,0 +1,58 @@
+---
+title: "Intro to spatial data"
+subtitle: ""
+author: "Jakub Nowosad"
+date: ""
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+## Introduction
+
+---
+## Prerequisites {-}
+
+<!-- 
+- r, rstudio, gdal, proj4, geos, udunits 
+- r packages sf, raster, etc.
+- datasets 
+-->
+
+---
+## Reading and writing spatial data
+
+---
+## Working with attribute table
+
+---
+## Basic map making
+
+---
+## Spatial classes 
+
+---
+## Coordinate systems/reprojecting
+
+---
+## Working with vector data
+
+---
+## Working with raster data
+
+---
+## Raster-vector interaction
+
+---
+## Advanced map making
+
+---
+## ...
