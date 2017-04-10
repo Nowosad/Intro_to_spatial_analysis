@@ -56,3 +56,9 @@ options(htmltools.dir.version = FALSE)
 
 ---
 ## ...
+
+
+---
+## Resources
+
+- https://walkerke.github.io/tigris-webinar/#1
