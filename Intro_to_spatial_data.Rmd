@@ -101,5 +101,20 @@ class: inverse, center, middle
 ---
 ## Resources
 
+
+- [Documentation of the sf package](https://edzer.github.io/sfr/articles/sf1.html)
+- [HOW-TO: Mapping in R just got a whole lot easier](http://www.computerworld.com/article/3175623/data-analytics/mapping-in-r-just-got-a-whole-lot-easier.html)
+- [Spatial analysis in R with the sf package](https://cdn.rawgit.com/rhodyrstats/geospatial_with_sf/bc2b17cf/geospatial_with_sf.html)
+- [Tidy spatial data in R: using dplyr, tidyr, and ggplot2 with sf](http://strimas.com/r/tidy-sf/)
+- [Introduction to Working With Raster Data in R](http://neondataskills.org/tutorial-series/raster-data-series/)
+- [Map and analyze raster data in R](http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/)
+- [The Visual Raster Cheat Sheet](http://rpubs.com/etiennebr/visualraster)
+- [Leaflet for R](http://rstudio.github.io/leaflet/)
+- [Spatial Data Analysis and Modeling with R](http://rspatial.org/index.html)
+- [Downloading and plotting MODIS Chlorophyll-a data](http://clarkrichards.org/r/oce/modis/chl/sp/raster/2017/03/25/modis-chl-data/)
+
 - https://walkerke.github.io/tigris-webinar/#1
+- https://github.com/walkerke/tigris
+
+<!-- our book?? -->
 
