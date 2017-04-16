@@ -1,8 +1,8 @@
 ---
 title: "Intro to spatial data"
 subtitle: ""
-author: "Jakub Nowosad"
-date: ""
+author: "Jakub Nowosad <br>nowosad.jakub@gmail.com"
+date: "2017-04-26"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -19,16 +19,87 @@ options(htmltools.dir.version = FALSE)
 ## Introduction
 
 ---
+class: inverse, center, middle
 ## Vector data
 
 ---
+## Reading
+
+---
+## Writing
+
+---
+## `sf` structure
+
+---
+## CRS assignation
+
+---
+## Reprojection
+
+---
+## Attributes
+
+---
+## Simple map
+
+---
+class: inverse, center, middle
 ## Raster data
 
 ---
+## Reading
+
+---
+## Writing
+
+---
+## `sf` structure
+
+---
+## CRS assignation
+
+---
+## Reprojection
+
+---
+## Attributes
+
+---
+## Simple map
+
+---
+class: inverse, center, middle
 ## Vector-Raster interactions
 
 ---
+## Vector-Raster conversion
+
+---
+## Raster-Vector conversion
+
+---
+## Extract
+
+---
+## Crop
+
+---
+class: inverse, center, middle
 ## Advanced map-making
 
 ---
-## References
+## tmap
+
+---
+## leaflet
+
+---
+class: inverse, center, middle
+## Resources
+
+---
+## Resources
+
+- https://walkerke.github.io/tigris-webinar/#1
+
