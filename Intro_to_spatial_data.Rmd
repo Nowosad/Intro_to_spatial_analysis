@@ -19,40 +19,16 @@ options(htmltools.dir.version = FALSE)
 ## Introduction
 
 ---
-## Prerequisites {-}
-
-<!-- 
-- r, rstudio, gdal, proj4, geos, udunits 
-- r packages sf, raster, etc.
-- datasets 
--->
+## Vector data
 
 ---
-## Reading and writing spatial data
+## Raster data
 
 ---
-## Working with attribute table
+## Vector-Raster interactions
 
 ---
-## Basic map making
+## Advanced map-making
 
 ---
-## Spatial classes 
-
----
-## Coordinate systems/reprojecting
-
----
-## Working with vector data
-
----
-## Working with raster data
-
----
-## Raster-vector interaction
-
----
-## Advanced map making
-
----
-## ...
+## References
