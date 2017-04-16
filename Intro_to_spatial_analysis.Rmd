@@ -1,5 +1,5 @@
 ---
-title: "Intro to spatial data"
+title: "Intro to spatial analysis"
 subtitle: ""
 author: "Jakub Nowosad <br>nowosad.jakub@gmail.com"
 date: "2017-04-26"
