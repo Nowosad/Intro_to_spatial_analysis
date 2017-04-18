@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Intro to spatial data</title>
+    <title>Intro to spatial analysis</title>
     <meta charset="utf-8">
     <meta name="author" content="Jakub Nowosad  nowosad.jakub@gmail.com" />
     <meta name="date" content="2017-04-26" />
@@ -11,7 +11,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Intro to spatial data
+# Intro to spatial analysis
 ### Jakub Nowosad <br><a href="mailto:nowosad.jakub@gmail.com">nowosad.jakub@gmail.com</a>
 ### 2017-04-26
 
@@ -27,10 +27,72 @@ class: inverse, center, middle
 ## Vector data
 
 ---
+## The `sf` package
+
+
+```r
+devtools::install_github('edzer/sfr') # development version
+install.packages('sf') # stable version
+```
+
+You need a recent version of the GDAL, GEOS, Proj.4, and UDUNITS libraries installed for this to work on Mac and Linux. More information of that at https://github.com/edzer/sfr.
+
+
+```r
+library('sf')
+```
+
+```
+## Linking to GEOS 3.5.0, GDAL 2.1.2, proj.4 4.9.2
+```
+
+---
 ## Reading
+
+
+```r
+wrld &lt;- st_read('data/wrld.shp')
+```
+
+```
+## Reading layer `wrld' from data source `/home/jn/Documents/Intro_to_spatial_data/data/wrld.shp' using driver `ESRI Shapefile'
+## converted into: POLYGON
+## Simple feature collection with 177 features and 10 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+```
+
+
+```r
+wrld &lt;- st_read('data/wrld.gpkg')
+```
+
+```
+## Reading layer `wrld.gpkg' from data source `/home/jn/Documents/Intro_to_spatial_data/data/wrld.gpkg' using driver `GPKG'
+## converted into: MULTIPOLYGON
+## Simple feature collection with 177 features and 10 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+```
 
 ---
 ## Writing
+
+
+```r
+st_write(wrld, 'data/wrld.shp')
+```
+
+
+```r
+st_write(wrld, 'data/wrld.gpkg')
+```
 
 ---
 ## `sf` structure

@@ -23,10 +23,40 @@ class: inverse, center, middle
 ## Vector data
 
 ---
+## The `sf` package
+
+```{r, eval=FALSE}
+devtools::install_github('edzer/sfr') # development version
+install.packages('sf') # stable version
+```
+
+You need a recent version of the GDAL, GEOS, Proj.4, and UDUNITS libraries installed for this to work on Mac and Linux. More information of that at https://github.com/edzer/sfr.
+
+```{r}
+library('sf')
+```
+
+---
 ## Reading
+
+```{r}
+wrld <- st_read('data/wrld.shp')
+```
+
+```{r}
+wrld <- st_read('data/wrld.gpkg')
+```
 
 ---
 ## Writing
+
+```{r, eval=FALSE}
+st_write(wrld, 'data/wrld.shp')
+```
+
+```{r, eval=FALSE}
+st_write(wrld, 'data/wrld.gpkg')
+```
 
 ---
 ## `sf` structure
