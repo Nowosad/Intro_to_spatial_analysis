@@ -23,21 +23,31 @@ class: inverse, center, middle
 ## Vector data
 
 ---
-## The `sf` package
+## The **sf** package
+
+The **sf** package in an R implementation of [Simple Features](https://en.wikipedia.org/wiki/Simple_Features). This package incorporates:
+- a new spatial data class system in R
+- functions for reading and writing data
+- tools for spatial operations on vectors
+
+Most of the functions in this package starts with prefix `st_`.
 
 ```{r, eval=FALSE}
 devtools::install_github('edzer/sfr') # development version
+```
+or
+```{r, eval=FALSE}
 install.packages('sf') # stable version
 ```
 
-You need a recent version of the GDAL, GEOS, Proj.4, and UDUNITS libraries installed for this to work on Mac and Linux. More information of that at https://github.com/edzer/sfr.
+You need a recent version of the GDAL, GEOS, Proj.4, and UDUNITS libraries installed for this to work on Mac and Linux. More information on that at https://github.com/edzer/sfr.
 
 ```{r}
 library('sf')
 ```
 
 ---
-## Reading
+## Reading spatial data
 
 ```{r}
 wrld <- st_read('data/wrld.shp')
@@ -48,30 +58,205 @@ wrld <- st_read('data/wrld.gpkg')
 ```
 
 ---
-## Writing
+## Writing spatial data
 
-```{r, eval=FALSE}
-st_write(wrld, 'data/wrld.shp')
+```{r, warning=FALSE, results='hide', echo=FALSE}
+file.remove(c('data/new_wrld.shp', 'data/new_wrld.gpkg'))
 ```
 
-```{r, eval=FALSE}
-st_write(wrld, 'data/wrld.gpkg')
+```{r, warning=FALSE}
+st_write(wrld, 'data/new_wrld.shp')
+```
+
+```{r, warning=FALSE}
+st_write(wrld, 'data/new_wrld.gpkg')
+```
+
+```{r, warning=FALSE, results='hide', echo=FALSE}
+file.remove(c('data/new_wrld.shp', 'data/new_wrld.gpkg'))
 ```
 
 ---
-## `sf` structure
+## **sf** structure
 
----
-## CRS assignation
+```{r}
+class(wrld)
+```
 
----
-## Reprojection
+**sf** objects usually have two classes - `sf` and `data.frame`. Two main differences comparing to a reguar `data.frame` object are spatial metadata (`geometry type`, `dimension`, `bbox`, `epsg (SRID)`, `proj4string`) and additional column - typicaly named `geom` or `geometry`.
+
+```{r}
+wrld[1:2, 1:3]
+```
 
 ---
 ## Attributes
 
+- **sf** object can be used as a regular `data.frame` object in many operations
+
+```{r, eval=FALSE}
+head(wrld)
+nrow(wrld)
+ncol(wrld)
+wrld[, c(1, 3)]
+wrld[1:5, 2]
+wrld[c(5, 10, 15), ]
+```
+
+- The `st_set_geometry` function can be used to remove the geometry column:
+
+```{r}
+wrld_df <- st_set_geometry(wrld, NULL)
+class(wrld_df)
+```
+
 ---
-## Simple map
+## Attributes - **dplyr** package
+
+- It also easy to use the **dplyr** package on `sf` objects:
+
+```{r, message=FALSE}
+library('dplyr')
+```
+
+- `select()`:
+
+```{r}
+wrld_sel <- select(wrld, name_long, area_km2)
+```
+
+```{r, echo=FALSE}
+wrld_sel[1:4, ]
+```
+
+---
+## Attributes - **dplyr** package
+
+- `arrange()`:
+
+```{r}
+wrld_arr <- arrange(wrld, area_km2)
+```
+
+```{r, echo=FALSE}
+wrld_arr[1:3, ]
+```
+
+---
+## Attributes - **dplyr** package
+
+- `filter()`:
+
+```{r}
+wrld_fil <- filter(wrld, pop < 297517)
+```
+
+```{r, echo=FALSE}
+wrld_fil[1:3, ]
+```
+
+---
+## Attributes - **dplyr** package
+
+- `mutate()`:
+
+```{r}
+wrld_mut <- mutate(wrld, pop_density = pop/area_km2)
+```
+
+```{r, echo=FALSE}
+wrld_mut[1:3, ]
+```
+
+---
+## Attributes - **dplyr** package
+
+- `summarize()`:
+
+```{r}
+wrld_sum1 <- summarize(wrld, pop_sum = sum(pop, na.rm = TRUE), 
+                      pop_mean = mean(pop, na.rm = TRUE), 
+                      pop_median = median(pop, na.rm = TRUE))
+```
+
+```{r, echo=FALSE}
+wrld_sum1[1, ]
+```
+
+```{r}
+wrld_sum1 <- wrld %>% 
+        group_by(continent) %>% 
+        summarize(pop_sum = sum(pop, na.rm = TRUE), 
+                      pop_mean = mean(pop, na.rm = TRUE), 
+                      pop_median = median(pop, na.rm = TRUE))
+```
+
+```{r, echo=FALSE}
+wrld_sum1[1:3, ]
+```
+
+---
+## CRS assignation
+
+- In case when a coordinate reference system (CRS) is missing or the wrong CRS is set, `st_crs()` or `st_set_crs` function can be used:
+
+```{r, warning=FALSE}
+wrld_set3410 <- st_set_crs(wrld, 3410)
+st_crs(wrld_set3410)
+```
+
+
+```{r,echo=FALSE, eval=FALSE}
+png('figs/coord_compare0.png', width = 1000, height = 250)
+par(mfrow = c(1, 2), mar=c(0,0,0,0))
+plot(wrld_set3410[0]);plot(wrld[0])
+dev.off()
+```
+
+![](figs/coord_compare0.png)
+
+
+
+---
+## Reprojection
+
+- The `st_transform()` can be used to transform coordinates
+
+```{r}
+wrld_3410 <- st_transform(wrld, 3410)
+st_crs(wrld_3410)
+```
+
+```{r,echo=FALSE, eval=FALSE}
+png('figs/coord_compare.png', width = 1000, height = 250)
+par(mfrow = c(1, 2), mar=c(0,0,0,0))
+plot(wrld_3410[0]);plot(wrld[0])
+dev.off()
+```
+
+![](figs/coord_compare.png)
+
+---
+## Basic maps
+
+- Basic maps of `sf` object can be quickly created using the `plot()` function:
+
+```{r, eval=FALSE}
+plot(wrld[0])
+```
+
+```{r, eval=FALSE}
+plot(wrld["pop"])
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+png('figs/plot_compare.png', width = 800, height = 300)
+par(mfrow = c(1, 2), mar=c(0,0,1,0))
+plot(wrld[0]);plot(wrld["pop"])
+dev.off()
+```
+
+![](figs/plot_compare.png)
 
 ---
 class: inverse, center, middle
@@ -84,7 +269,7 @@ class: inverse, center, middle
 ## Writing
 
 ---
-## `sf` structure
+## **raster** structure
 
 ---
 ## CRS assignation

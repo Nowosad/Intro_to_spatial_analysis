@@ -27,27 +27,34 @@ class: inverse, center, middle
 ## Vector data
 
 ---
-## The `sf` package
+## The **sf** package
+
+The **sf** package in an R implementation of [Simple Features](https://en.wikipedia.org/wiki/Simple_Features). This package incorporates:
+- a new spatial data class system in R
+- functions for reading and writing data
+- tools for spatial operations on vectors
+
+Most of the functions in this package starts with prefix `st_`.
 
 
 ```r
 devtools::install_github('edzer/sfr') # development version
+```
+or
+
+```r
 install.packages('sf') # stable version
 ```
 
-You need a recent version of the GDAL, GEOS, Proj.4, and UDUNITS libraries installed for this to work on Mac and Linux. More information of that at https://github.com/edzer/sfr.
+You need a recent version of the GDAL, GEOS, Proj.4, and UDUNITS libraries installed for this to work on Mac and Linux. More information on that at https://github.com/edzer/sfr.
 
 
 ```r
 library('sf')
 ```
 
-```
-## Linking to GEOS 3.5.0, GDAL 2.1.2, proj.4 4.9.2
-```
-
 ---
-## Reading
+## Reading spatial data
 
 
 ```r
@@ -82,32 +89,338 @@ wrld &lt;- st_read('data/wrld.gpkg')
 ```
 
 ---
-## Writing
+## Writing spatial data
+
+
 
 
 ```r
-st_write(wrld, 'data/wrld.shp')
+st_write(wrld, 'data/new_wrld.shp')
+```
+
+```
+## Writing layer `new_wrld.shp' to data source `data/new_wrld.shp' using driver `ESRI Shapefile'
+## features:       177
+## fields:         10
+## geometry type:  Multi Polygon
 ```
 
 
 ```r
-st_write(wrld, 'data/wrld.gpkg')
+st_write(wrld, 'data/new_wrld.gpkg')
 ```
 
----
-## `sf` structure
+```
+## Writing layer `new_wrld.gpkg' to data source `data/new_wrld.gpkg' using driver `GPKG'
+## features:       177
+## fields:         10
+## geometry type:  Multi Polygon
+```
+
+
 
 ---
-## CRS assignation
+## **sf** structure
 
----
-## Reprojection
+
+```r
+class(wrld)
+```
+
+```
+## [1] "sf"         "data.frame"
+```
+
+**sf** objects usually have two classes - `sf` and `data.frame`. Two main differences comparing to a reguar `data.frame` object are spatial metadata (`geometry type`, `dimension`, `bbox`, `epsg (SRID)`, `proj4string`) and additional column - typicaly named `geom` or `geometry`.
+
+
+```r
+wrld[1:2, 1:3]
+```
+
+```
+## Simple feature collection with 2 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 11.6401 ymin: -17.93064 xmax: 75.15803 ymax: 38.48628
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##   iso_a2   name_long continent                           geom
+## 1     AF Afghanistan      Asia MULTIPOLYGON(((61.210817091...
+## 2     AO      Angola    Africa MULTIPOLYGON(((16.326528354...
+```
 
 ---
 ## Attributes
 
+- **sf** object can be used as a regular `data.frame` object in many operations
+
+
+```r
+head(wrld)
+nrow(wrld)
+ncol(wrld)
+wrld[, c(1, 3)]
+wrld[1:5, 2]
+wrld[c(5, 10, 15), ]
+```
+
+- The `st_set_geometry` function can be used to remove the geometry column:
+
+
+```r
+wrld_df &lt;- st_set_geometry(wrld, NULL)
+class(wrld_df)
+```
+
+```
+## [1] "data.frame"
+```
+
 ---
-## Simple map
+## Attributes - **dplyr** package
+
+- It also easy to use the **dplyr** package on `sf` objects:
+
+
+```r
+library('dplyr')
+```
+
+- `select()`:
+
+
+```r
+wrld_sel &lt;- select(wrld, name_long, area_km2)
+```
+
+
+```
+## Simple feature collection with 4 features and 2 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 11.6401 ymin: -17.93064 xmax: 75.15803 ymax: 42.68825
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##              name_long   area_km2                           geom
+## 1          Afghanistan  652270.07 MULTIPOLYGON(((61.210817091...
+## 2               Angola 1245463.75 MULTIPOLYGON(((16.326528354...
+## 3              Albania   29694.80 MULTIPOLYGON(((20.590247430...
+## 4 United Arab Emirates   79880.74 MULTIPOLYGON(((51.579518670...
+```
+
+---
+## Attributes - **dplyr** package
+
+- `arrange()`:
+
+
+```r
+wrld_arr &lt;- arrange(wrld, area_km2)
+```
+
+
+```
+## Simple feature collection with 3 features and 10 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 5.674052 ymin: 31.35344 xmax: 35.54567 ymax: 50.12805
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##   iso_a2       name_long continent region_un      subregion
+## 1     LU      Luxembourg    Europe    Europe Western Europe
+## 2   &lt;NA&gt; Northern Cyprus      Asia      Asia   Western Asia
+## 3     PS       Palestine      Asia      Asia   Western Asia
+##                type area_km2     pop  lifeExp gdpPercap
+## 1 Sovereign country 2416.870  556319 82.20732 90297.557
+## 2 Sovereign country 3786.365      NA       NA        NA
+## 3          Disputed 5037.104 4294682 72.90402  4319.528
+##                             geom
+## 1 MULTIPOLYGON(((6.0430733577...
+## 2 MULTIPOLYGON(((32.731780226...
+## 3 MULTIPOLYGON(((35.545665317...
+```
+
+---
+## Attributes - **dplyr** package
+
+- `filter()`:
+
+
+```r
+wrld_fil &lt;- filter(wrld, pop &lt; 297517)
+```
+
+
+```
+## Simple feature collection with 3 features and 10 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -73.297 ymin: -22.39998 xmax: 167.8449 ymax: 83.64513
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##   iso_a2     name_long     continent region_un        subregion
+## 1     GL     Greenland North America  Americas Northern America
+## 2     NC New Caledonia       Oceania   Oceania        Melanesia
+## 3     VU       Vanuatu       Oceania   Oceania        Melanesia
+##                type   area_km2    pop  lifeExp gdpPercap
+## 1           Country 2206644.44  56295       NA        NA
+## 2        Dependency   23219.01 268000 77.57317        NA
+## 3 Sovereign country    7490.04 258883 71.91832  2891.973
+##                             geom
+## 1 MULTIPOLYGON(((-46.76379 82...
+## 2 MULTIPOLYGON(((165.77998986...
+## 3 MULTIPOLYGON(((167.84487674...
+```
+
+---
+## Attributes - **dplyr** package
+
+- `mutate()`:
+
+
+```r
+wrld_mut &lt;- mutate(wrld, pop_density = pop/area_km2)
+```
+
+
+```
+## Simple feature collection with 3 features and 11 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 11.6401 ymin: -17.93064 xmax: 75.15803 ymax: 42.68825
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##   iso_a2   name_long continent region_un       subregion              type
+## 1     AF Afghanistan      Asia      Asia   Southern Asia Sovereign country
+## 2     AO      Angola    Africa    Africa   Middle Africa Sovereign country
+## 3     AL     Albania    Europe    Europe Southern Europe Sovereign country
+##    area_km2      pop  lifeExp gdpPercap pop_density
+## 1  652270.1 31627506 60.37446  1844.022    48.48836
+## 2 1245463.7 24227524 52.26688  6955.960    19.45261
+## 3   29694.8  2893654 77.83046 10698.525    97.44649
+##                             geom
+## 1 MULTIPOLYGON(((61.210817091...
+## 2 MULTIPOLYGON(((16.326528354...
+## 3 MULTIPOLYGON(((20.590247430...
+```
+
+---
+## Attributes - **dplyr** package
+
+- `summarize()`:
+
+
+```r
+wrld_sum1 &lt;- summarize(wrld, pop_sum = sum(pop, na.rm = TRUE), 
+                      pop_mean = mean(pop, na.rm = TRUE), 
+                      pop_median = median(pop, na.rm = TRUE))
+```
+
+
+```
+##      pop_sum pop_mean pop_median
+## 1 7208968708 42910528   10521458
+```
+
+
+```r
+wrld_sum1 &lt;- wrld %&gt;% 
+        group_by(continent) %&gt;% 
+        summarize(pop_sum = sum(pop, na.rm = TRUE), 
+                      pop_mean = mean(pop, na.rm = TRUE), 
+                      pop_median = median(pop, na.rm = TRUE))
+```
+
+
+```
+## Simple feature collection with 3 features and 4 fields
+## geometry type:  GEOMETRY
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 55.38525
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## # A tibble: 3 × 5
+##    continent    pop_sum pop_mean pop_median              geom
+##       &lt;fctr&gt;      &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;  &lt;simple_feature&gt;
+## 1     Africa 1147005839 23895955   14129805 &lt;MULTIPOLYGON...&gt;
+## 2 Antarctica          0      NaN         NA &lt;MULTIPOLYGON...&gt;
+## 3       Asia 4306025131 95689447   18772481 &lt;MULTIPOLYGON...&gt;
+```
+
+---
+## CRS assignation
+
+- In case when a coordinate reference system (CRS) is missing or the wrong CRS is set, `st_crs()` or `st_set_crs` function can be used:
+
+
+```r
+wrld_set3410 &lt;- st_set_crs(wrld, 3410)
+st_crs(wrld_set3410)
+```
+
+```
+## $epsg
+## [1] 3410
+## 
+## $proj4string
+## [1] "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
+## 
+## attr(,"class")
+## [1] "crs"
+```
+
+
+
+
+![](figs/coord_compare0.png)
+
+
+
+---
+## Reprojection
+
+- The `st_transform()` can be used to transform coordinates
+
+
+```r
+wrld_3410 &lt;- st_transform(wrld, 3410)
+st_crs(wrld_3410)
+```
+
+```
+## $epsg
+## [1] 3410
+## 
+## $proj4string
+## [1] "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
+## 
+## attr(,"class")
+## [1] "crs"
+```
+
+
+
+![](figs/coord_compare.png)
+
+---
+## Basic maps
+
+- Basic maps of `sf` object can be quickly created using the `plot()` function:
+
+
+```r
+plot(wrld[0])
+```
+
+
+```r
+plot(wrld["pop"])
+```
+
+
+
+![](figs/plot_compare.png)
 
 ---
 class: inverse, center, middle
@@ -120,7 +433,7 @@ class: inverse, center, middle
 ## Writing
 
 ---
-## `sf` structure
+## **raster** structure
 
 ---
 ## CRS assignation
