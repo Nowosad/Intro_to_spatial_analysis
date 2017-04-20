@@ -450,6 +450,8 @@ class: inverse, center, middle
 &lt;!-- old timer--&gt;
 &lt;!-- three types of data --&gt;
 
+- `RasterStack`, `RasterBrick`
+
 
 ```r
 library('raster')
@@ -605,6 +607,7 @@ values_dem &lt;- getValues(dem)
 ---
 ## Attributes
 
+.pull-left[
 
 ```r
 new_values &lt;- runif(864000, min=0, max=500) # pseudo-random number generator
@@ -612,7 +615,19 @@ new_dem &lt;- setValues(dem, new_values)
 ```
 
 &lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-47-1.png" style="display: block; margin: auto;" /&gt;
+]
 
+.pull-right[
+
+```r
+new_dem2 &lt;- dem
+new_dem2[new_dem2 &lt; 0] &lt;-  NA
+```
+
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-49-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
 ## CRS assign
 
 
@@ -652,7 +667,7 @@ dem3410 &lt;- projectRaster(dem, crs="+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=
 plot(dem)
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-52-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-54-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse, center, middle
@@ -678,7 +693,7 @@ ham_sp &lt;- as(ham, 'Spatial')
 dem_crop &lt;- crop(dem, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[ 
@@ -687,7 +702,7 @@ dem_crop &lt;- crop(dem, ham_sp)
 dem_mask &lt;- mask(dem_crop, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-60-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -708,7 +723,7 @@ p &lt;- levelplot(dem_crop, margin = FALSE, par.settings = my_theme)
 p + layer(sp.lines(ham_sp, lwd = 1.4, col = 'black'))
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-59-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-61-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## tmap

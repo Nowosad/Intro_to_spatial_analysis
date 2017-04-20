@@ -312,6 +312,8 @@ plot(ham, add = TRUE)
 <!-- old timer-->
 <!-- three types of data -->
 
+- `RasterStack`, `RasterBrick`
+
 ```{r, message=FALSE}
 library('raster')
 ```
@@ -377,6 +379,7 @@ values_dem[1:100]
 ---
 ## Attributes
 
+.pull-left[
 ```{r}
 new_values <- runif(864000, min=0, max=500) # pseudo-random number generator
 new_dem <- setValues(dem, new_values)
@@ -385,6 +388,18 @@ new_dem <- setValues(dem, new_values)
 ```{r, fig.align='center', fig.height=5, echo=FALSE}
 plot(new_dem)
 ```
+]
+
+.pull-right[
+```{r}
+new_dem2 <- dem
+new_dem2[new_dem2 < 0] <-  NA
+```
+
+```{r, fig.align='center', fig.height=5, echo=FALSE}
+plot(new_dem2)
+```
+]
 
 ---
 ## CRS assign
