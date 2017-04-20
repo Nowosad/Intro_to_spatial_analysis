@@ -18,6 +18,12 @@ options(htmltools.dir.version = FALSE)
 
 ## Introduction
 
+<!-- Tons of R spatial packages -->
+<!-- the most important vector -->
+<!-- the most imporatant raster -->
+<!-- other importante -->
+<!-- task view -->
+
 ---
 class: inverse, center, middle
 ## Vector data
@@ -42,7 +48,7 @@ install.packages('sf') # stable version
 
 You need a recent version of the GDAL, GEOS, Proj.4, and UDUNITS libraries installed for this to work on Mac and Linux. More information on that at https://github.com/edzer/sfr.
 
-```{r}
+```{r, message=FALSE}
 library('sf')
 ```
 
@@ -111,7 +117,7 @@ class(wrld_df)
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - It also easy to use the **dplyr** package on `sf` objects:
 
@@ -130,7 +136,7 @@ wrld_sel[1:4, ]
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `arrange()`:
 
@@ -143,7 +149,7 @@ wrld_arr[1:3, ]
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `filter()`:
 
@@ -156,7 +162,7 @@ wrld_fil[1:3, ]
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `mutate()`:
 
@@ -169,7 +175,7 @@ wrld_mut[1:3, ]
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `summarize()`:
 
@@ -196,7 +202,7 @@ wrld_sum1[1:3, ]
 ```
 
 ---
-## CRS assignation
+## CRS assign
 
 - In case when a coordinate reference system (CRS) is missing or the wrong CRS is set, `st_crs()` or `st_set_crs` function can be used:
 
@@ -258,40 +264,167 @@ dev.off()
 
 ![](figs/plot_compare.png)
 
+
+---
+## The **sp** package
+
+<!-- predesessor of sf-->
+<!-- rgdal, rgeos-->
+<!-- still used by many packages-->
+<!-- how to convert (both ways)-->
+
 ---
 class: inverse, center, middle
 ## Raster data
 
+```{r, include=FALSE, eval=FALSE}
+library('raster')
+# getData('SRTM', lon=-8, lat=45, path='data')
+# getData('SRTM', lon=-8, lat=40, path='data')
+# dem <- raster('data/srtm_35_04.tif')
+# system.time(plot(dem))
+# system.time(image(dem))
+# system.time(rasterVis::levelplot(dem))
+# getData('SRTM', lon=-85, lat=40, path='data')
+library('tigris')
+library('sf')
+library('tidyverse')
+oh <- counties(state='OH')
+ham <- oh %>% 
+        st_as_sf(.) %>% 
+        filter(NAME=='Hamilton')
+plot(ham[0])
+
+dem <- raster('data/srtm_20_05.tif')
+
+
+
+dem2 <- crop(dem, extent(-85, -84, 38.8, 39.4))
+writeRaster(dem2, 'data/srtm.tif')
+plot(dem2)
+plot(ham, add = TRUE)
+```
+
+---
+## The **raster** package
+
+<!-- raster info -->
+<!-- old timer-->
+<!-- three types of data -->
+
+```{r, message=FALSE}
+library('raster')
+```
+
 ---
 ## Reading
+
+```{r}
+dem <- raster('data/srtm.tif')
+dem
+```
 
 ---
 ## Writing
 
+```{r, warning=FALSE, results='hide', echo=FALSE}
+file.remove(c('data/new_dem.tif', 'data/new_dem2.tif'))
+```
+
+```{r}
+writeRaster(dem, 'data/new_dem.tif')
+```
+
+
+```{r}
+writeRaster(dem, 'data/new_dem2.tif', 
+            datatype = 'FLT4S', options=c("COMPRESS=DEFLATE"))
+```
+
+```{r, warning=FALSE, results='hide', echo=FALSE}
+file.remove(c('data/new_dem.tif', 'data/new_dem2.tif'))
+```
+
+```{r}
+writeFormats()
+```
+
 ---
 ## **raster** structure
 
----
-## CRS assignation
+```{r}
+dem
+```
 
----
-## Reprojection
+```{r}
+inMemory(dem)
+```
 
 ---
 ## Attributes
 
+```{r}
+values_dem <- getValues(dem)
+```
+
+```{r, echo=FALSE}
+values_dem[1:100]
+```
+
+- `getValuesBlock`
+- `getValuesFocal`
+
+---
+## Attributes
+
+```{r}
+new_values <- runif(864000, min=0, max=500) # pseudo-random number generator
+new_dem <- setValues(dem, new_values)
+```
+
+```{r, fig.align='center', fig.height=5, echo=FALSE}
+plot(new_dem)
+```
+
+---
+## CRS assign
+
+```{r}
+dem_set3410 <- dem
+crs(dem_set3410) <- "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
+```
+
+```{r}
+crs(dem_set3410)
+```
+
+---
+## Reprojection
+
+```{r}
+dem3410 <- projectRaster(dem, crs="+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs")
+```
+
+```{r,echo=FALSE, eval=FALSE}
+png('figs/coord_compare_raster.png', width = 800, height = 400)
+par(mfrow = c(1, 2), mar=c(4,4,4,8))
+# par(mfrow = c(1, 2))
+plot(dem);plot(dem3410)
+dev.off()
+```
+
+![](figs/coord_compare_raster.png)
+
 ---
 ## Simple map
+
+```{r, fig.align='center'}
+plot(dem)
+```
 
 ---
 class: inverse, center, middle
 ## Vector-Raster interactions
-
----
-## Vector-Raster conversion
-
----
-## Raster-Vector conversion
 
 ---
 ## Extract
@@ -299,9 +432,56 @@ class: inverse, center, middle
 ---
 ## Crop
 
+```{r, echo=FALSE, message=FALSE}
+library('tigris')
+oh <- counties(state='OH')
+ham0 <- oh %>% 
+        st_as_sf(.) %>% 
+        filter(NAME=='Hamilton')
+ham <- st_transform(ham0, 4326)
+```
+
+
+```{r}
+ham_sp <- as(ham, 'Spatial')
+```
+
+.pull-left[ 
+```{r}
+dem_crop <- crop(dem, ham_sp)
+```
+
+```{r, echo=FALSE}
+plot(dem_crop)
+```
+]
+
+.pull-right[ 
+```{r}
+dem_mask <- mask(dem_crop, ham_sp)
+```
+
+```{r, echo=FALSE}
+plot(dem_mask)
+```
+]
+
 ---
 class: inverse, center, middle
 ## Advanced map-making
+
+---
+## rasterVis
+
+- https://oscarperpinan.github.io/rastervis/
+- http://www.colorbrewer.org; 
+
+```{r, message=FALSE, fig.align='center', fig.height=4}
+library('rasterVis')
+my_theme <- rasterTheme(region=brewer.pal('RdYlGn', n = 9))
+p <- levelplot(dem_crop, margin = FALSE, par.settings = my_theme)
+p + layer(sp.lines(ham_sp, lwd = 1.4, col = 'black'))
+```
 
 ---
 ## tmap
@@ -311,11 +491,21 @@ class: inverse, center, middle
 
 ---
 class: inverse, center, middle
+## Spatial data
+
+---
+## Spatial data
+
+- https://walkerke.github.io/tigris-webinar/#1
+- https://github.com/walkerke/tigris
+
+
+---
+class: inverse, center, middle
 ## Resources
 
 ---
 ## Resources
-
 
 - [Documentation of the sf package](https://edzer.github.io/sfr/articles/sf1.html)
 - [HOW-TO: Mapping in R just got a whole lot easier](http://www.computerworld.com/article/3175623/data-analytics/mapping-in-r-just-got-a-whole-lot-easier.html)
@@ -324,12 +514,10 @@ class: inverse, center, middle
 - [Introduction to Working With Raster Data in R](http://neondataskills.org/tutorial-series/raster-data-series/)
 - [Map and analyze raster data in R](http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/)
 - [The Visual Raster Cheat Sheet](http://rpubs.com/etiennebr/visualraster)
+- [Introduction to rasterVis](https://rpubs.com/alobo/rasterVis_Intro1)
 - [Leaflet for R](http://rstudio.github.io/leaflet/)
 - [Spatial Data Analysis and Modeling with R](http://rspatial.org/index.html)
 - [Downloading and plotting MODIS Chlorophyll-a data](http://clarkrichards.org/r/oce/modis/chl/sp/raster/2017/03/25/modis-chl-data/)
-
-- https://walkerke.github.io/tigris-webinar/#1
-- https://github.com/walkerke/tigris
 
 <!-- our book?? -->
 

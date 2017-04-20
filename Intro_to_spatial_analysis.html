@@ -22,6 +22,12 @@ class: center, middle, inverse, title-slide
 
 ## Introduction
 
+&lt;!-- Tons of R spatial packages --&gt;
+&lt;!-- the most important vector --&gt;
+&lt;!-- the most imporatant raster --&gt;
+&lt;!-- other importante --&gt;
+&lt;!-- task view --&gt;
+
 ---
 class: inverse, center, middle
 ## Vector data
@@ -178,7 +184,7 @@ class(wrld_df)
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - It also easy to use the **dplyr** package on `sf` objects:
 
@@ -210,7 +216,7 @@ wrld_sel &lt;- select(wrld, name_long, area_km2)
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `arrange()`:
 
@@ -242,7 +248,7 @@ wrld_arr &lt;- arrange(wrld, area_km2)
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `filter()`:
 
@@ -274,7 +280,7 @@ wrld_fil &lt;- filter(wrld, pop &lt; 297517)
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `mutate()`:
 
@@ -306,7 +312,7 @@ wrld_mut &lt;- mutate(wrld, pop_density = pop/area_km2)
 ```
 
 ---
-## Attributes - **dplyr** package
+## Attributes - the **dplyr** package
 
 - `summarize()`:
 
@@ -349,7 +355,7 @@ wrld_sum1 &lt;- wrld %&gt;%
 ```
 
 ---
-## CRS assignation
+## CRS assign
 
 - In case when a coordinate reference system (CRS) is missing or the wrong CRS is set, `st_crs()` or `st_set_crs` function can be used:
 
@@ -422,40 +428,235 @@ plot(wrld["pop"])
 
 ![](figs/plot_compare.png)
 
+
+---
+## The **sp** package
+
+&lt;!-- predesessor of sf--&gt;
+&lt;!-- rgdal, rgeos--&gt;
+&lt;!-- still used by many packages--&gt;
+&lt;!-- how to convert (both ways)--&gt;
+
 ---
 class: inverse, center, middle
 ## Raster data
 
+
+
+---
+## The **raster** package
+
+&lt;!-- raster info --&gt;
+&lt;!-- old timer--&gt;
+&lt;!-- three types of data --&gt;
+
+
+```r
+library('raster')
+```
+
 ---
 ## Reading
+
+
+```r
+dem &lt;- raster('data/srtm.tif')
+dem
+```
+
+```
+## class       : RasterLayer 
+## dimensions  : 720, 1200, 864000  (nrow, ncol, ncell)
+## resolution  : 0.0008333333, 0.0008333333  (x, y)
+## extent      : -85.00042, -84.00042, 38.79958, 39.39958  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
+## data source : /home/jn/Documents/Intro_to_spatial_data/data/srtm.tif 
+## names       : srtm 
+## values      : 109, 323  (min, max)
+```
 
 ---
 ## Writing
 
+
+
+
+```r
+writeRaster(dem, 'data/new_dem.tif')
+```
+
+
+
+```r
+writeRaster(dem, 'data/new_dem2.tif', 
+            datatype = 'FLT4S', options=c("COMPRESS=DEFLATE"))
+```
+
+
+
+
+```r
+writeFormats()
+```
+
+```
+##       name        long_name                                
+##  [1,] "raster"    "R-raster"                               
+##  [2,] "SAGA"      "SAGA GIS"                               
+##  [3,] "IDRISI"    "IDRISI"                                 
+##  [4,] "IDRISIold" "IDRISI (img/doc)"                       
+##  [5,] "BIL"       "Band by Line"                           
+##  [6,] "BSQ"       "Band Sequential"                        
+##  [7,] "BIP"       "Band by Pixel"                          
+##  [8,] "ascii"     "Arc ASCII"                              
+##  [9,] "CDF"       "NetCDF"                                 
+## [10,] "big"       "big.matrix"                             
+## [11,] "ADRG"      "ARC Digitized Raster Graphics"          
+## [12,] "BMP"       "MS Windows Device Independent Bitmap"   
+## [13,] "BT"        "VTP .bt (Binary Terrain) 1.3 Format"    
+## [14,] "CTable2"   "CTable2 Datum Grid Shift"               
+## [15,] "EHdr"      "ESRI .hdr Labelled"                     
+## [16,] "ELAS"      "ELAS"                                   
+## [17,] "ENVI"      "ENVI .hdr Labelled"                     
+## [18,] "ERS"       "ERMapper .ers Labelled"                 
+## [19,] "FITS"      "Flexible Image Transport System"        
+## [20,] "GPKG"      "GeoPackage"                             
+## [21,] "GS7BG"     "Golden Software 7 Binary Grid (.grd)"   
+## [22,] "GSBG"      "Golden Software Binary Grid (.grd)"     
+## [23,] "GTiff"     "GeoTIFF"                                
+## [24,] "GTX"       "NOAA Vertical Datum .GTX"               
+## [25,] "HDF4Image" "HDF4 Dataset"                           
+## [26,] "HFA"       "Erdas Imagine Images (.img)"            
+## [27,] "IDA"       "Image Data and Analysis"                
+## [28,] "ILWIS"     "ILWIS Raster Map"                       
+## [29,] "INGR"      "Intergraph Raster"                      
+## [30,] "ISCE"      "ISCE raster"                            
+## [31,] "ISIS2"     "USGS Astrogeology ISIS cube (Version 2)"
+## [32,] "KRO"       "KOLOR Raw"                              
+## [33,] "LAN"       "Erdas .LAN/.GIS"                        
+## [34,] "Leveller"  "Leveller heightfield"                   
+## [35,] "MBTiles"   "MBTiles"                                
+## [36,] "MRF"       "Meta Raster Format"                     
+## [37,] "netCDF"    "Network Common Data Format"             
+## [38,] "NITF"      "National Imagery Transmission Format"   
+## [39,] "NTv2"      "NTv2 Datum Grid Shift"                  
+## [40,] "PAux"      "PCI .aux Labelled"                      
+## [41,] "PCIDSK"    "PCIDSK Database File"                   
+## [42,] "PCRaster"  "PCRaster Raster File"                   
+## [43,] "PDF"       "Geospatial PDF"                         
+## [44,] "PNM"       "Portable Pixmap Format (netpbm)"        
+## [45,] "RMF"       "Raster Matrix Format"                   
+## [46,] "ROI_PAC"   "ROI_PAC raster"                         
+## [47,] "RST"       "Idrisi Raster A.1"                      
+## [48,] "SAGA"      "SAGA GIS Binary Grid (.sdat)"           
+## [49,] "SGI"       "SGI Image File Format 1.0"              
+## [50,] "Terragen"  "Terragen heightfield"
+```
+
 ---
 ## **raster** structure
 
----
-## CRS assignation
 
----
-## Reprojection
+```r
+dem
+```
+
+```
+## class       : RasterLayer 
+## dimensions  : 720, 1200, 864000  (nrow, ncol, ncell)
+## resolution  : 0.0008333333, 0.0008333333  (x, y)
+## extent      : -85.00042, -84.00042, 38.79958, 39.39958  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
+## data source : /home/jn/Documents/Intro_to_spatial_data/data/srtm.tif 
+## names       : srtm 
+## values      : 109, 323  (min, max)
+```
+
+
+```r
+inMemory(dem)
+```
+
+```
+## [1] FALSE
+```
 
 ---
 ## Attributes
 
+
+```r
+values_dem &lt;- getValues(dem)
+```
+
+
+```
+##   [1] 191 194 202 204 198 193 189 186 187 188 192 206 221 229 236 238 241
+##  [18] 236 226 217 209 205 201 198 203 211 218 220 225 232 237 236 238 242
+##  [35] 247 254 257 261 260 258 264 270 272 276 280 281 276 266 266 270 274
+##  [52] 276 279 278 283 286 287 288 288 286 272 254 244 245 253 262 268 271
+##  [69] 273 275 282 293 294 296 297 297 298 299 300 300 300 302 301 303 304
+##  [86] 303 303 302 301 301 299 296 296 294 293 293 288 280 272 266
+```
+
+- `getValuesBlock`
+- `getValuesFocal`
+
+---
+## Attributes
+
+
+```r
+new_values &lt;- runif(864000, min=0, max=500) # pseudo-random number generator
+new_dem &lt;- setValues(dem, new_values)
+```
+
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-47-1.png" style="display: block; margin: auto;" /&gt;
+
+## CRS assign
+
+
+```r
+dem_set3410 &lt;- dem
+crs(dem_set3410) &lt;- "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
+```
+
+
+```r
+crs(dem_set3410)
+```
+
+```
+## CRS arguments:
+##  +proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228
+## +units=m +no_defs
+```
+
+---
+## Reprojection
+
+
+```r
+dem3410 &lt;- projectRaster(dem, crs="+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs")
+```
+
+
+
+![](figs/coord_compare_raster.png)
+
 ---
 ## Simple map
+
+
+```r
+plot(dem)
+```
+
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-52-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse, center, middle
 ## Vector-Raster interactions
-
----
-## Vector-Raster conversion
-
----
-## Raster-Vector conversion
 
 ---
 ## Extract
@@ -463,9 +664,51 @@ class: inverse, center, middle
 ---
 ## Crop
 
+
+
+
+
+```r
+ham_sp &lt;- as(ham, 'Spatial')
+```
+
+.pull-left[ 
+
+```r
+dem_crop &lt;- crop(dem, ham_sp)
+```
+
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[ 
+
+```r
+dem_mask &lt;- mask(dem_crop, ham_sp)
+```
+
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
+]
+
 ---
 class: inverse, center, middle
 ## Advanced map-making
+
+---
+## rasterVis
+
+- https://oscarperpinan.github.io/rastervis/
+- http://www.colorbrewer.org; 
+
+
+```r
+library('rasterVis')
+my_theme &lt;- rasterTheme(region=brewer.pal('RdYlGn', n = 9))
+p &lt;- levelplot(dem_crop, margin = FALSE, par.settings = my_theme)
+p + layer(sp.lines(ham_sp, lwd = 1.4, col = 'black'))
+```
+
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-59-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## tmap
@@ -475,11 +718,21 @@ class: inverse, center, middle
 
 ---
 class: inverse, center, middle
+## Spatial data
+
+---
+## Spatial data
+
+- https://walkerke.github.io/tigris-webinar/#1
+- https://github.com/walkerke/tigris
+
+
+---
+class: inverse, center, middle
 ## Resources
 
 ---
 ## Resources
-
 
 - [Documentation of the sf package](https://edzer.github.io/sfr/articles/sf1.html)
 - [HOW-TO: Mapping in R just got a whole lot easier](http://www.computerworld.com/article/3175623/data-analytics/mapping-in-r-just-got-a-whole-lot-easier.html)
@@ -488,12 +741,10 @@ class: inverse, center, middle
 - [Introduction to Working With Raster Data in R](http://neondataskills.org/tutorial-series/raster-data-series/)
 - [Map and analyze raster data in R](http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/)
 - [The Visual Raster Cheat Sheet](http://rpubs.com/etiennebr/visualraster)
+- [Introduction to rasterVis](https://rpubs.com/alobo/rasterVis_Intro1)
 - [Leaflet for R](http://rstudio.github.io/leaflet/)
 - [Spatial Data Analysis and Modeling with R](http://rspatial.org/index.html)
 - [Downloading and plotting MODIS Chlorophyll-a data](http://clarkrichards.org/r/oce/modis/chl/sp/raster/2017/03/25/modis-chl-data/)
-
-- https://walkerke.github.io/tigris-webinar/#1
-- https://github.com/walkerke/tigris
 
 &lt;!-- our book?? --&gt;
     </textarea>
