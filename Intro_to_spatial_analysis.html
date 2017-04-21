@@ -610,7 +610,7 @@ values_dem &lt;- getValues(dem)
 .pull-left[
 
 ```r
-new_values &lt;- runif(864000, min=0, max=500) # pseudo-random number generator
+new_values &lt;- runif(864000, min=150, max=300) # pseudo-random number generator
 new_dem &lt;- setValues(dem, new_values)
 ```
 
@@ -625,6 +625,27 @@ new_dem2[new_dem2 &lt; 0] &lt;-  NA
 ```
 
 &lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-49-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+## Attributes
+
+.pull-left[
+
+```r
+new_dem3 &lt;- dem + 50
+```
+
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-51-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+```r
+new_dem4 &lt;- dem * new_dem
+```
+
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-53-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -667,7 +688,7 @@ dem3410 &lt;- projectRaster(dem, crs="+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=
 plot(dem)
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-54-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-58-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse, center, middle
@@ -693,7 +714,7 @@ ham_sp &lt;- as(ham, 'Spatial')
 dem_crop &lt;- crop(dem, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-62-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[ 
@@ -702,7 +723,7 @@ dem_crop &lt;- crop(dem, ham_sp)
 dem_mask &lt;- mask(dem_crop, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-60-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-64-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -723,7 +744,7 @@ p &lt;- levelplot(dem_crop, margin = FALSE, par.settings = my_theme)
 p + layer(sp.lines(ham_sp, lwd = 1.4, col = 'black'))
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-61-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-65-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## tmap
@@ -738,9 +759,15 @@ class: inverse, center, middle
 ---
 ## Spatial data
 
-- https://walkerke.github.io/tigris-webinar/#1
-- https://github.com/walkerke/tigris
-
+- [The tigirs package](https://github.com/walkerke/tigris) - Census TIGER/Line shapefiles in R 
+- [The rnaturalearth package](https://github.com/ropenscilabs/rnaturalearth) -  Natural Earth map data
+- [The MODIStsp package](https://github.com/lbusett/MODIStsp) - automatic download and preprocessing of MODIS Land Products Time Series
+- [The rWBclimate](https://github.com/ropensci/rWBclimate) - the World Bank climate data
+- [The GSODR package](https://github.com/ropensci/GSODR) - Global Summary Daily Weather Data
+- [The hddtools package](https://github.com/ropensci/hddtools/) - Hydrological Data Discovery Tools
+- [The rnoaa package](https://github.com/ropensci/rnoaa/) - an R interface to many NOAA data sources
+- [The USAboundaries package](https://github.com/ropensci/usaboundaries/) - contemporary state, county, and congressional district boundaries for the United States of America, as well as historical boundaries from 1629 to 2000 for states and counties
+- [The spData package](https://github.com/Nowosad/spData) - datasets for spatial analysis
 
 ---
 class: inverse, center, middle

@@ -64,6 +64,12 @@ wrld <- st_read('data/wrld.gpkg')
 ```
 
 ---
+## Reading spatial data - textfiles
+
+
+
+
+---
 ## Writing spatial data
 
 ```{r, warning=FALSE, results='hide', echo=FALSE}
@@ -381,7 +387,7 @@ values_dem[1:100]
 
 .pull-left[
 ```{r}
-new_values <- runif(864000, min=0, max=500) # pseudo-random number generator
+new_values <- runif(864000, min=150, max=300) # pseudo-random number generator
 new_dem <- setValues(dem, new_values)
 ```
 
@@ -398,6 +404,29 @@ new_dem2[new_dem2 < 0] <-  NA
 
 ```{r, fig.align='center', fig.height=5, echo=FALSE}
 plot(new_dem2)
+```
+]
+
+---
+## Attributes
+
+.pull-left[
+```{r}
+new_dem3 <- dem + 50
+```
+
+```{r, fig.align='center', fig.height=5, echo=FALSE}
+plot(new_dem3)
+```
+]
+
+.pull-right[
+```{r}
+new_dem4 <- dem * new_dem
+```
+
+```{r, fig.align='center', fig.height=5, echo=FALSE}
+plot(new_dem4)
 ```
 ]
 
@@ -506,14 +535,20 @@ p + layer(sp.lines(ham_sp, lwd = 1.4, col = 'black'))
 
 ---
 class: inverse, center, middle
-## Spatial data
+## Spatial data sources
 
 ---
-## Spatial data
+## Spatial data sources
 
-- https://walkerke.github.io/tigris-webinar/#1
-- https://github.com/walkerke/tigris
-
+- [The tigirs package](https://github.com/walkerke/tigris) - Census TIGER/Line shapefiles in R 
+- [The USAboundaries package](https://github.com/ropensci/usaboundaries/) - contemporary state, county, and congressional district boundaries for the United States of America, as well as historical boundaries from 1629 to 2000 for states and counties
+- [The rnaturalearth package](https://github.com/ropenscilabs/rnaturalearth) -  Natural Earth map data
+- [The MODIStsp package](https://github.com/lbusett/MODIStsp) - automatic download and preprocessing of MODIS Land Products Time Series
+- [The rWBclimate](https://github.com/ropensci/rWBclimate) - the World Bank climate data
+- [The GSODR package](https://github.com/ropensci/GSODR) - Global Summary Daily Weather Data
+- [The rnoaa package](https://github.com/ropensci/rnoaa/) - an R interface to many NOAA data sources
+- [The hddtools package](https://github.com/ropensci/hddtools/) - Hydrological Data Discovery Tools
+- [The spData package](https://github.com/Nowosad/spData) - datasets for spatial analysis
 
 ---
 class: inverse, center, middle
