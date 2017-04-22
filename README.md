@@ -1,20 +1,34 @@
-# Prerequisites
+# Intro to spatial analysis
 
-## R
+## Slides
+
+[Slides available here.](https://cdn.rawgit.com/Nowosad/Intro_to_spatial_analysis/3a0228ef/Intro_to_spatial_analysis.html)
+
+## Prerequisites
+
+### R
 
 - https://www.r-project.org/
 - http://cran.rstudio.com/bin/linux/
 - http://cran.rstudio.com/bin/windows/base/
 - http://cran.rstudio.com/bin/macosx/
 
-## RStudio
+### RStudio
 
 - https://www.rstudio.com/products/rstudio/download/
 
-## R packages
+### R packages
 
 - `install.packages('sf')`
 - `install.packages('raster')`
+- `install.packages('dplyr')`
+- `install.packages('rasterVis')`
+- `install.packages('tmap')`
+- `install.packages('leaflet')`
 
-## Datasets
+### Datasets
 
+- [wrld](https://github.com/Nowosad/Intro_to_spatial_analysis/raw/master/data/wrld.zip)
+- [ham](https://github.com/Nowosad/Intro_to_spatial_analysis/raw/master/data/hamilton_county.gpkg)
+- [ham_cities](https://raw.githubusercontent.com/Nowosad/Intro_to_spatial_analysis/master/data/hamiltion_cities.csv)
+- [dem](https://github.com/Nowosad/Intro_to_spatial_analysis/raw/master/data/srtm.tif)
