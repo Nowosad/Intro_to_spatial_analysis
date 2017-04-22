@@ -2,9 +2,10 @@
 title: "Intro to spatial analysis"
 subtitle: ""
 author: "Jakub Nowosad <br>nowosad.jakub@gmail.com"
-date: "2017-04-26"
+date: "2017-04-27"
 output:
   xaringan::moon_reader:
+    css: ["default", "mytheme.css"]
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -21,13 +22,11 @@ options(htmltools.dir.version = FALSE)
 
 ## Introduction
 
-
-
-<!-- Tons of R spatial packages -->
-<!-- the most important vector -->
-<!-- the most imporatant raster -->
-<!-- other importante -->
-<!-- task view -->
+- R has powerful GIS capabilities due to many additional packages - see [CRAN Task View: Analysis of Spatial Data](https://cran.r-project.org/web/views/Spatial.html) and [CRAN Task View: Handling and Analyzing Spatio-Temporal Data](https://cran.r-project.org/web/views/SpatioTemporal.html)
+- **sf** and **sp** are the most important R packages to handle vector data; **sf** is a successor of **sp**, but it's still evolving. Moreover, many other R packages depend on the functions and classes for the **sp** package 
+- **raster** is an extension of spatial data classes to work with rasters
+- there are many ways to vizualize spatial data in R, for example **ggplot2**, **rasterVis**, **tmap**, **leaflet**, and **mapview** packages
+- it is easy to connect R with a GIS software - GRASS GIS (**rgrass7**), SAGA (**RSAGA**), QGIS (**RQGIS**), and ArcGIS (**arcgisbinding**)
 
 ---
 class: inverse, center, middle
@@ -106,7 +105,7 @@ file.remove(c('data/new_wrld.shp', 'data/new_wrld.gpkg'))
 class(wrld)
 ```
 
-**sf** objects usually have two classes - `sf` and `data.frame`. Two main differences comparing to a reguar `data.frame` object are spatial metadata (`geometry type`, `dimension`, `bbox`, `epsg (SRID)`, `proj4string`) and additional column - typicaly named `geom` or `geometry`.
+**sf** objects usually have two classes - `sf` and `data.frame`. Two main differences comparing to a regular `data.frame` object are spatial metadata (`geometry type`, `dimension`, `bbox`, `epsg (SRID)`, `proj4string`) and additional column - typically named `geom` or `geometry`.
 
 ```{r}
 wrld[1:2, 1:3]
@@ -295,6 +294,18 @@ dev.off()
 ---
 ## The **sp** package
 
+- the **sp** package is a predecessor of the **sf** package 
+- together with the **rgdal** and **rgeos** package it creates a powerful tool to works with spatial data
+- many spatial R packages still depends on the **sp** package, therefore it is important to know how to convert **sp** to and from **sf** objects
+
+```{r}
+wrld_sp <- as(wrld, 'Spatial')
+class(wrld_sp)
+wrld_sf <- st_as_sf(wrld_sp)
+class(wrld_sf)
+```
+
+
 <!-- predesessor of sf-->
 <!-- rgdal, rgeos-->
 <!-- still used by many packages-->
@@ -335,11 +346,23 @@ plot(ham, add = TRUE)
 ---
 ## The **raster** package
 
+The **raster** package consists of method and classes for raster processing. It allows to:
+
+- read and write raster data
+- perform raster algebra and raster manipulations
+- work on large datasets due to its ability to process data in chunks
+- visualize raster data
+- many more...
+
+This package has three object classes:
+
+- `RasterLayer` - for single-layer objects
+- `RasterStack` - for multi-layer objects from separate files or a few layers from a single file
+- `RasterBrick` - for multi-layer objects linked to a single file
+
 <!-- raster info -->
 <!-- old timer-->
 <!-- three types of data -->
-
-- `RasterStack`, `RasterBrick`
 
 ```{r, message=FALSE}
 library('raster')
@@ -392,16 +415,23 @@ inMemory(dem)
 ---
 ## Attributes
 
+- the `getValues` function returns values from a raster object:
+
 ```{r}
 values_dem <- getValues(dem)
 ```
 
 ```{r, echo=FALSE}
-values_dem[1:100]
+values_dem[1:50]
 ```
 
-- `getValuesBlock`
-- `getValuesFocal`
+- it is possible to specify a number of rows to extract its values:
+
+```{r, eval=FALSE}
+getValues(dem, row = 5)
+```
+
+- there are two additional functions - `getValuesBlock` (to get a block of raster values) and `getValuesFocal` (to get focal raster cell values)
 
 ---
 ## Attributes

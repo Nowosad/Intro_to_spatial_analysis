@@ -4,11 +4,12 @@
     <title>Intro to spatial analysis</title>
     <meta charset="utf-8">
     <meta name="author" content="Jakub Nowosad  nowosad.jakub@gmail.com" />
-    <meta name="date" content="2017-04-26" />
+    <meta name="date" content="2017-04-27" />
     <link href="libs/remark-css/example.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
     <script src="libs/pymjs/pym.v1.min.js"></script>
     <script src="libs/widgetframe-binding/widgetframe.js"></script>
+    <link rel="stylesheet" href="mytheme.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -16,7 +17,7 @@ class: center, middle, inverse, title-slide
 
 # Intro to spatial analysis
 ### Jakub Nowosad <br><a href="mailto:nowosad.jakub@gmail.com">nowosad.jakub@gmail.com</a>
-### 2017-04-26
+### 2017-04-27
 
 ---
 
@@ -25,13 +26,11 @@ class: center, middle, inverse, title-slide
 
 ## Introduction
 
-
-
-&lt;!-- Tons of R spatial packages --&gt;
-&lt;!-- the most important vector --&gt;
-&lt;!-- the most imporatant raster --&gt;
-&lt;!-- other importante --&gt;
-&lt;!-- task view --&gt;
+- R has powerful GIS capabilities due to many additional packages - see [CRAN Task View: Analysis of Spatial Data](https://cran.r-project.org/web/views/Spatial.html) and [CRAN Task View: Handling and Analyzing Spatio-Temporal Data](https://cran.r-project.org/web/views/SpatioTemporal.html)
+- **sf** and **sp** are the most important R packages to handle vector data; **sf** is a successor of **sp**, but it's still evolving. Moreover, many other R packages depend on the functions and classes for the **sp** package 
+- **raster** is an extension of spatial data classes to work with rasters
+- there are many ways to vizualize spatial data in R, for example **ggplot2**, **rasterVis**, **tmap**, **leaflet**, and **mapview** packages
+- it is easy to connect R with a GIS software - GRASS GIS (**rgrass7**), SAGA (**RSAGA**), QGIS (**RQGIS**), and ArcGIS (**arcgisbinding**)
 
 ---
 class: inverse, center, middle
@@ -185,7 +184,7 @@ class(wrld)
 ## [1] "sf"         "data.frame"
 ```
 
-**sf** objects usually have two classes - `sf` and `data.frame`. Two main differences comparing to a reguar `data.frame` object are spatial metadata (`geometry type`, `dimension`, `bbox`, `epsg (SRID)`, `proj4string`) and additional column - typicaly named `geom` or `geometry`.
+**sf** objects usually have two classes - `sf` and `data.frame`. Two main differences comparing to a regular `data.frame` object are spatial metadata (`geometry type`, `dimension`, `bbox`, `epsg (SRID)`, `proj4string`) and additional column - typically named `geom` or `geometry`.
 
 
 ```r
@@ -514,6 +513,32 @@ plot(wrld["pop"])
 ---
 ## The **sp** package
 
+- the **sp** package is a predecessor of the **sf** package 
+- together with the **rgdal** and **rgeos** package it creates a powerful tool to works with spatial data
+- many spatial R packages still depends on the **sp** package, therefore it is important to know how to convert **sp** to and from **sf** objects
+
+
+```r
+wrld_sp &lt;- as(wrld, 'Spatial')
+class(wrld_sp)
+```
+
+```
+## [1] "SpatialPolygonsDataFrame"
+## attr(,"package")
+## [1] "sp"
+```
+
+```r
+wrld_sf &lt;- st_as_sf(wrld_sp)
+class(wrld_sf)
+```
+
+```
+## [1] "sf"         "data.frame"
+```
+
+
 &lt;!-- predesessor of sf--&gt;
 &lt;!-- rgdal, rgeos--&gt;
 &lt;!-- still used by many packages--&gt;
@@ -528,11 +553,23 @@ class: inverse, center, middle
 ---
 ## The **raster** package
 
+The **raster** package consists of method and classes for raster processing. It allows to:
+
+- read and write raster data
+- perform raster algebra and raster manipulations
+- work on large datasets due to its ability to process data in chunks
+- visualize raster data
+- many more...
+
+This package has three object classes:
+
+- `RasterLayer` - for single-layer objects
+- `RasterStack` - for multi-layer objects from separate files or a few layers from a single file
+- `RasterBrick` - for multi-layer objects linked to a single file
+
 &lt;!-- raster info --&gt;
 &lt;!-- old timer--&gt;
 &lt;!-- three types of data --&gt;
-
-- `RasterStack`, `RasterBrick`
 
 
 ```r
@@ -668,6 +705,8 @@ inMemory(dem)
 ---
 ## Attributes
 
+- the `getValues` function returns values from a raster object:
+
 
 ```r
 values_dem &lt;- getValues(dem)
@@ -675,16 +714,19 @@ values_dem &lt;- getValues(dem)
 
 
 ```
-##   [1] 191 194 202 204 198 193 189 186 187 188 192 206 221 229 236 238 241
-##  [18] 236 226 217 209 205 201 198 203 211 218 220 225 232 237 236 238 242
-##  [35] 247 254 257 261 260 258 264 270 272 276 280 281 276 266 266 270 274
-##  [52] 276 279 278 283 286 287 288 288 286 272 254 244 245 253 262 268 271
-##  [69] 273 275 282 293 294 296 297 297 298 299 300 300 300 302 301 303 304
-##  [86] 303 303 302 301 301 299 296 296 294 293 293 288 280 272 266
+##  [1] 191 194 202 204 198 193 189 186 187 188 192 206 221 229 236 238 241
+## [18] 236 226 217 209 205 201 198 203 211 218 220 225 232 237 236 238 242
+## [35] 247 254 257 261 260 258 264 270 272 276 280 281 276 266 266 270
 ```
 
-- `getValuesBlock`
-- `getValuesFocal`
+- it is possible to specify a number of rows to extract its values:
+
+
+```r
+getValues(dem, row = 5)
+```
+
+- there are two additional functions - `getValuesBlock` (to get a block of raster values) and `getValuesFocal` (to get focal raster cell values)
 
 ---
 ## Attributes
@@ -696,7 +738,7 @@ new_values &lt;- runif(864000, min=150, max=300) # pseudo-random number generato
 new_dem &lt;- setValues(dem, new_values)
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-51-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-53-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -706,7 +748,7 @@ new_dem2 &lt;- dem
 new_dem2[new_dem2 &lt; 0] &lt;-  NA
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-53-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-55-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -718,7 +760,7 @@ new_dem2[new_dem2 &lt; 0] &lt;-  NA
 new_dem3 &lt;- dem + 50
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-55-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-57-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -727,7 +769,7 @@ new_dem3 &lt;- dem + 50
 new_dem4 &lt;- dem * new_dem
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-57-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-59-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -770,7 +812,7 @@ dem3410 &lt;- projectRaster(dem, crs="+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=
 plot(dem)
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-62-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-64-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse, center, middle
@@ -842,7 +884,7 @@ ham_sp &lt;- as(ham84, 'Spatial')
 dem_crop &lt;- crop(dem, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-68-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[ 
@@ -851,7 +893,7 @@ dem_crop &lt;- crop(dem, ham_sp)
 dem_mask &lt;- mask(dem_crop, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-72-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -873,7 +915,7 @@ p &lt;- p + layer(sp.lines(ham_sp, lwd = 3, col = 'darkgrey'))
 p + layer(sp.points(ham_cities_sp, pch = 19, col = 'black'))
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-71-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-73-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## tmap
@@ -889,7 +931,7 @@ tm_shape(wrld, projection="wintri") +
         tm_style_grey()
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-72-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-74-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## leaflet
@@ -904,10 +946,10 @@ leaflet(ham_sp) %&gt;%
         addMarkers(data=ham_cities_sp, popup=~as.character(name))
 ```
 
-<div id="htmlwidget-57589a50807d7cfc341f" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
-<!-- widgetframe widget-href="widget_unnamed-chunk-74.html" -->
+<div id="htmlwidget-a067effe698fcb028445" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
+<!-- widgetframe widget-href="widget_unnamed-chunk-76.html" -->
 <!-- widgetframe libs-href="widget_libs" -->
-<script type="application/json" data-for="htmlwidget-57589a50807d7cfc341f">{"x":{"url":"widget_unnamed-chunk-74.html","options":{"xdomain":"*","allowfullscreen":false}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-a067effe698fcb028445">{"x":{"url":"widget_unnamed-chunk-76.html","options":{"xdomain":"*","allowfullscreen":false}},"evals":[],"jsHooks":[]}</script>
 
 ---
 class: inverse, center, middle
