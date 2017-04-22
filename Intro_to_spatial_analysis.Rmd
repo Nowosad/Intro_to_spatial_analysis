@@ -13,10 +13,15 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(raster)
+library(tidyverse)
+library(sf)
 options(htmltools.dir.version = FALSE)
 ```
 
 ## Introduction
+
+
 
 <!-- Tons of R spatial packages -->
 <!-- the most important vector -->
@@ -60,14 +65,20 @@ wrld <- st_read('data/wrld.shp')
 ```
 
 ```{r}
-wrld <- st_read('data/wrld.gpkg')
+ham <- st_read('data/hamilton_county.gpkg')
 ```
 
 ---
-## Reading spatial data - textfiles
+## Reading spatial data - text files
 
+```{r}
+ham_cities <- read.csv('data/hamiltion_cities.csv')
+```
 
-
+```{r}
+ham_cities_sf <- st_as_sf(ham_cities, coords = c("X","Y"))
+ham_cities_sf
+```
 
 ---
 ## Writing spatial data
@@ -227,7 +238,17 @@ dev.off()
 
 ![](figs/coord_compare0.png)
 
+---
+## CRS assign
 
+```{r}
+st_crs(ham_cities_sf)
+```
+
+```{r}
+ham_cities_sf <- st_set_crs(ham_cities_sf, 4326)
+st_crs(ham_cities_sf)
+```
 
 ---
 ## Reprojection
@@ -300,9 +321,9 @@ ham <- oh %>%
         st_as_sf(.) %>% 
         filter(NAME=='Hamilton')
 plot(ham[0])
+ham %>% st_write(., 'data/hamilton_county.gpkg')
 
 dem <- raster('data/srtm_20_05.tif')
-
 
 
 dem2 <- crop(dem, extent(-85, -84, 38.8, 39.4))
@@ -473,6 +494,16 @@ class: inverse, center, middle
 ---
 ## Extract
 
+```{r}
+ham_cities_sp <- as(ham_cities_sf, 'Spatial')
+raster::extract(dem, ham_cities_sp)
+```
+
+```{r}
+ham_cities_sf$dem <- raster::extract(dem, ham_cities_sp)
+ham_cities_sf
+```
+
 ---
 ## Crop
 
@@ -485,9 +516,9 @@ ham0 <- oh %>%
 ham <- st_transform(ham0, 4326)
 ```
 
-
 ```{r}
-ham_sp <- as(ham, 'Spatial')
+ham84 <- st_transform(ham, 4326)
+ham_sp <- as(ham84, 'Spatial')
 ```
 
 .pull-left[ 
@@ -518,20 +549,46 @@ class: inverse, center, middle
 ## rasterVis
 
 - https://oscarperpinan.github.io/rastervis/
-- http://www.colorbrewer.org; 
+- http://www.colorbrewer.org
 
 ```{r, message=FALSE, fig.align='center', fig.height=4}
 library('rasterVis')
 my_theme <- rasterTheme(region=brewer.pal('RdYlGn', n = 9))
 p <- levelplot(dem_crop, margin = FALSE, par.settings = my_theme)
-p + layer(sp.lines(ham_sp, lwd = 1.4, col = 'black'))
+p <- p + layer(sp.lines(ham_sp, lwd = 3, col = 'darkgrey'))
+p + layer(sp.points(ham_cities_sp, pch = 19, col = 'black'))
 ```
 
 ---
 ## tmap
 
+- https://cran.r-project.org/web/packages/tmap/vignettes/tmap-nutshell.html
+
+```{r, fig.align='center', fig.height=4}
+library('tmap')
+tm_shape(wrld, projection="wintri") +
+        tm_polygons("lifeExp", style="pretty", palette="RdYlGn",
+                    auto.palette.mapping=FALSE, title=c("Life expactancy")) +
+        tm_style_grey()
+```
+
 ---
 ## leaflet
+
+```{r, eval=FALSE}
+library('leaflet')
+leaflet(ham_sp) %>%
+        addProviderTiles(providers$Stamen.Watercolor) %>% 
+        # addTiles() %>%
+        addPolygons() %>% 
+        addMarkers(data=ham_cities_sp, popup=~as.character(name))
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(widgetframe)
+library('leaflet')
+frameWidget(l, height = '400')
+```
 
 ---
 class: inverse, center, middle
@@ -540,6 +597,7 @@ class: inverse, center, middle
 ---
 ## Spatial data sources
 
+- [The osmdata package](https://github.com/osmdatar/osmdata) - for downloading OpenStreetMap data
 - [The tigirs package](https://github.com/walkerke/tigris) - Census TIGER/Line shapefiles in R 
 - [The USAboundaries package](https://github.com/ropensci/usaboundaries/) - contemporary state, county, and congressional district boundaries for the United States of America, as well as historical boundaries from 1629 to 2000 for states and counties
 - [The rnaturalearth package](https://github.com/ropenscilabs/rnaturalearth) -  Natural Earth map data
@@ -557,16 +615,17 @@ class: inverse, center, middle
 ---
 ## Resources
 
-- [Documentation of the sf package](https://edzer.github.io/sfr/articles/sf1.html)
-- [HOW-TO: Mapping in R just got a whole lot easier](http://www.computerworld.com/article/3175623/data-analytics/mapping-in-r-just-got-a-whole-lot-easier.html)
-- [Spatial analysis in R with the sf package](https://cdn.rawgit.com/rhodyrstats/geospatial_with_sf/bc2b17cf/geospatial_with_sf.html)
-- [Tidy spatial data in R: using dplyr, tidyr, and ggplot2 with sf](http://strimas.com/r/tidy-sf/)
-- [Introduction to Working With Raster Data in R](http://neondataskills.org/tutorial-series/raster-data-series/)
-- [Map and analyze raster data in R](http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/)
-- [The Visual Raster Cheat Sheet](http://rpubs.com/etiennebr/visualraster)
+- [sf vignette](https://edzer.github.io/sfr/articles/) - documentation of the **sf** package
+- [HOW-TO: Mapping in R just got a whole lot easier](http://www.computerworld.com/article/3175623/data-analytics/mapping-in-r-just-got-a-whole-lot-easier.html) - an introduction to mapping using the sf package
+- [Spatial analysis in R with the sf package](https://cdn.rawgit.com/rhodyrstats/geospatial_with_sf/bc2b17cf/geospatial_with_sf.html) -  an introduction to spatial analysis using the sf package
+- [Tidy spatial data in R: using dplyr, tidyr, and ggplot2 with sf](http://strimas.com/r/tidy-sf/) 
+- [Introduction to Working With Raster Data in R](http://neondataskills.org/tutorial-series/raster-data-series/) - a series of introductory tutorials to the **raster** package
+- [Map and analyze raster data in R](http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/) - examples of how to work with raster data in R 
+- [The Visual Raster Cheat Sheet](http://rpubs.com/etiennebr/visualraster) - great illustrations of some operations of the **raster** package
 - [Introduction to rasterVis](https://rpubs.com/alobo/rasterVis_Intro1)
-- [Leaflet for R](http://rstudio.github.io/leaflet/)
-- [Spatial Data Analysis and Modeling with R](http://rspatial.org/index.html)
+- [Leaflet for R](http://rstudio.github.io/leaflet/)  - documentation of the **leaflet** package
+- [Spatial Data Analysis and Modeling with R](http://rspatial.org/index.html) - materials to learn about spatial data analysis and modeling with R
+- [Creating-maps-in-R](https://github.com/Robinlovelace/Creating-maps-in-R) - introductory tutorial on graphical display of geographical information in R
 - [Downloading and plotting MODIS Chlorophyll-a data](http://clarkrichards.org/r/oce/modis/chl/sp/raster/2017/03/25/modis-chl-data/)
 
 <!-- our book?? -->

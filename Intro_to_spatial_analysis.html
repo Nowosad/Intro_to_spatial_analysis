@@ -6,6 +6,9 @@
     <meta name="author" content="Jakub Nowosad  nowosad.jakub@gmail.com" />
     <meta name="date" content="2017-04-26" />
     <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <script src="libs/pymjs/pym.v1.min.js"></script>
+    <script src="libs/widgetframe-binding/widgetframe.js"></script>
   </head>
   <body>
     <textarea id="source">
@@ -21,6 +24,8 @@ class: center, middle, inverse, title-slide
 
 
 ## Introduction
+
+
 
 &lt;!-- Tons of R spatial packages --&gt;
 &lt;!-- the most important vector --&gt;
@@ -80,18 +85,61 @@ wrld &lt;- st_read('data/wrld.shp')
 
 
 ```r
-wrld &lt;- st_read('data/wrld.gpkg')
+ham &lt;- st_read('data/hamilton_county.gpkg')
 ```
 
 ```
-## Reading layer `wrld.gpkg' from data source `/home/jn/Documents/Intro_to_spatial_data/data/wrld.gpkg' using driver `GPKG'
-## converted into: MULTIPOLYGON
-## Simple feature collection with 177 features and 10 fields
-## geometry type:  MULTIPOLYGON
+## Reading layer `hamilton_county.gpkg' from data source `/home/jn/Documents/Intro_to_spatial_data/data/hamilton_county.gpkg' using driver `GPKG'
+## converted into: POLYGON
+## Simple feature collection with 1 feature and 17 fields
+## geometry type:  POLYGON
 ## dimension:      XY
-## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## bbox:           xmin: -84.8203 ymin: 39.02153 xmax: -84.25651 ymax: 39.31206
+## epsg (SRID):    4269
+## proj4string:    +proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs
+```
+
+---
+## Reading spatial data - text files
+
+
+```r
+ham_cities &lt;- read.csv('data/hamiltion_cities.csv')
+```
+
+
+```r
+ham_cities_sf &lt;- st_as_sf(ham_cities, coords = c("X","Y"))
+ham_cities_sf
+```
+
+```
+## Simple feature collection with 19 features and 2 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -84.81995 ymin: 39.07862 xmax: -84.26384 ymax: 39.29034
+## epsg (SRID):    NA
+## proj4string:    NA
+##             name place                      geometry
+## 1          Delhi  town POINT(-84.6052225 39.0950595)
+## 2        Milford  town  POINT(-84.2958988 39.174625)
+## 3      Covington  town  POINT(-84.508371 39.0836224)
+## 4       Harrison  town POINT(-84.8199516 39.2619993)
+## 5     Cincinnati  city POINT(-84.5124602 39.1014537)
+## 6     Springdale  town  POINT(-84.4852213 39.287002)
+## 7       Sycamore  town  POINT(-84.347427 39.2800883)
+## 8        Norwood  town POINT(-84.4596641 39.1556149)
+## 9       Loveland  town POINT(-84.2638406 39.2689562)
+## 10   Fort Thomas  town POINT(-84.4483432 39.0786242)
+## 11 Saint Bernard  town POINT(-84.4985541 39.1670033)
+## 12    Montgomery  town POINT(-84.3539662 39.2282432)
+## 13   Forest Park  town POINT(-84.5041108 39.2903353)
+## 14      Blue Ash  town POINT(-84.3782817 39.2320073)
+## 15        Ludlow  town POINT(-84.5474435 39.0925598)
+## 16   Sharonville  town POINT(-84.4132779 39.2681145)
+## 17       Reading  town POINT(-84.4421641 39.2236694)
+## 18      Bellevue  town POINT(-84.4826482 39.1067078)
+## 19       Newport  town POINT(-84.4919524 39.0889469)
 ```
 
 ---
@@ -105,7 +153,7 @@ st_write(wrld, 'data/new_wrld.shp')
 ```
 
 ```
-## Writing layer `new_wrld.shp' to data source `data/new_wrld.shp' using driver `ESRI Shapefile'
+## Writing layer `new_wrld' to data source `data/new_wrld.shp' using driver `ESRI Shapefile'
 ## features:       177
 ## fields:         10
 ## geometry type:  Multi Polygon
@@ -151,7 +199,7 @@ wrld[1:2, 1:3]
 ## bbox:           xmin: 11.6401 ymin: -17.93064 xmax: 75.15803 ymax: 38.48628
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-##   iso_a2   name_long continent                           geom
+##   iso_a2   name_long continent                       geometry
 ## 1     AF Afghanistan      Asia MULTIPOLYGON(((61.210817091...
 ## 2     AO      Angola    Africa MULTIPOLYGON(((16.326528354...
 ```
@@ -208,7 +256,7 @@ wrld_sel &lt;- select(wrld, name_long, area_km2)
 ## bbox:           xmin: 11.6401 ymin: -17.93064 xmax: 75.15803 ymax: 42.68825
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-##              name_long   area_km2                           geom
+##              name_long   area_km2                       geometry
 ## 1          Afghanistan  652270.07 MULTIPOLYGON(((61.210817091...
 ## 2               Angola 1245463.75 MULTIPOLYGON(((16.326528354...
 ## 3              Albania   29694.80 MULTIPOLYGON(((20.590247430...
@@ -241,7 +289,7 @@ wrld_arr &lt;- arrange(wrld, area_km2)
 ## 1 Sovereign country 2416.870  556319 82.20732 90297.557
 ## 2 Sovereign country 3786.365      NA       NA        NA
 ## 3          Disputed 5037.104 4294682 72.90402  4319.528
-##                             geom
+##                         geometry
 ## 1 MULTIPOLYGON(((6.0430733577...
 ## 2 MULTIPOLYGON(((32.731780226...
 ## 3 MULTIPOLYGON(((35.545665317...
@@ -273,7 +321,7 @@ wrld_fil &lt;- filter(wrld, pop &lt; 297517)
 ## 1           Country 2206644.44  56295       NA        NA
 ## 2        Dependency   23219.01 268000 77.57317        NA
 ## 3 Sovereign country    7490.04 258883 71.91832  2891.973
-##                             geom
+##                         geometry
 ## 1 MULTIPOLYGON(((-46.76379 82...
 ## 2 MULTIPOLYGON(((165.77998986...
 ## 3 MULTIPOLYGON(((167.84487674...
@@ -305,7 +353,7 @@ wrld_mut &lt;- mutate(wrld, pop_density = pop/area_km2)
 ## 1  652270.1 31627506 60.37446  1844.022    48.48836
 ## 2 1245463.7 24227524 52.26688  6955.960    19.45261
 ## 3   29694.8  2893654 77.83046 10698.525    97.44649
-##                             geom
+##                         geometry
 ## 1 MULTIPOLYGON(((61.210817091...
 ## 2 MULTIPOLYGON(((16.326528354...
 ## 3 MULTIPOLYGON(((20.590247430...
@@ -347,7 +395,7 @@ wrld_sum1 &lt;- wrld %&gt;%
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
 ## # A tibble: 3 × 5
-##    continent    pop_sum pop_mean pop_median              geom
+##    continent    pop_sum pop_mean pop_median          geometry
 ##       &lt;fctr&gt;      &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;  &lt;simple_feature&gt;
 ## 1     Africa 1147005839 23895955   14129805 &lt;MULTIPOLYGON...&gt;
 ## 2 Antarctica          0      NaN         NA &lt;MULTIPOLYGON...&gt;
@@ -381,7 +429,41 @@ st_crs(wrld_set3410)
 
 ![](figs/coord_compare0.png)
 
+---
+## CRS assign
 
+
+```r
+st_crs(ham_cities_sf)
+```
+
+```
+## $epsg
+## [1] NA
+## 
+## $proj4string
+## [1] NA
+## 
+## attr(,"class")
+## [1] "crs"
+```
+
+
+```r
+ham_cities_sf &lt;- st_set_crs(ham_cities_sf, 4326)
+st_crs(ham_cities_sf)
+```
+
+```
+## $epsg
+## [1] 4326
+## 
+## $proj4string
+## [1] "+proj=longlat +datum=WGS84 +no_defs"
+## 
+## attr(,"class")
+## [1] "crs"
+```
 
 ---
 ## Reprojection
@@ -614,7 +696,7 @@ new_values &lt;- runif(864000, min=150, max=300) # pseudo-random number generato
 new_dem &lt;- setValues(dem, new_values)
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-47-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-51-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -624,7 +706,7 @@ new_dem2 &lt;- dem
 new_dem2[new_dem2 &lt; 0] &lt;-  NA
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-49-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-53-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -636,7 +718,7 @@ new_dem2[new_dem2 &lt; 0] &lt;-  NA
 new_dem3 &lt;- dem + 50
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-51-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-55-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -645,7 +727,7 @@ new_dem3 &lt;- dem + 50
 new_dem4 &lt;- dem * new_dem
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-53-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-57-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -688,7 +770,7 @@ dem3410 &lt;- projectRaster(dem, crs="+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=
 plot(dem)
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-58-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-62-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 class: inverse, center, middle
@@ -697,15 +779,61 @@ class: inverse, center, middle
 ---
 ## Extract
 
+
+```r
+ham_cities_sp &lt;- as(ham_cities_sf, 'Spatial')
+raster::extract(dem, ham_cities_sp)
+```
+
+```
+##  [1] 276 160 157 161 188 226 260 202 184 261 171 243 258 260 165 178 173
+## [18] 162 162
+```
+
+
+```r
+ham_cities_sf$dem &lt;- raster::extract(dem, ham_cities_sp)
+ham_cities_sf
+```
+
+```
+## Simple feature collection with 19 features and 3 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -84.81995 ymin: 39.07862 xmax: -84.26384 ymax: 39.29034
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##             name place                      geometry dem
+## 1          Delhi  town POINT(-84.6052225 39.0950595) 276
+## 2        Milford  town  POINT(-84.2958988 39.174625) 160
+## 3      Covington  town  POINT(-84.508371 39.0836224) 157
+## 4       Harrison  town POINT(-84.8199516 39.2619993) 161
+## 5     Cincinnati  city POINT(-84.5124602 39.1014537) 188
+## 6     Springdale  town  POINT(-84.4852213 39.287002) 226
+## 7       Sycamore  town  POINT(-84.347427 39.2800883) 260
+## 8        Norwood  town POINT(-84.4596641 39.1556149) 202
+## 9       Loveland  town POINT(-84.2638406 39.2689562) 184
+## 10   Fort Thomas  town POINT(-84.4483432 39.0786242) 261
+## 11 Saint Bernard  town POINT(-84.4985541 39.1670033) 171
+## 12    Montgomery  town POINT(-84.3539662 39.2282432) 243
+## 13   Forest Park  town POINT(-84.5041108 39.2903353) 258
+## 14      Blue Ash  town POINT(-84.3782817 39.2320073) 260
+## 15        Ludlow  town POINT(-84.5474435 39.0925598) 165
+## 16   Sharonville  town POINT(-84.4132779 39.2681145) 178
+## 17       Reading  town POINT(-84.4421641 39.2236694) 173
+## 18      Bellevue  town POINT(-84.4826482 39.1067078) 162
+## 19       Newport  town POINT(-84.4919524 39.0889469) 162
+```
+
 ---
 ## Crop
 
 
 
 
-
 ```r
-ham_sp &lt;- as(ham, 'Spatial')
+ham84 &lt;- st_transform(ham, 4326)
+ham_sp &lt;- as(ham84, 'Spatial')
 ```
 
 .pull-left[ 
@@ -714,7 +842,7 @@ ham_sp &lt;- as(ham, 'Spatial')
 dem_crop &lt;- crop(dem, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-62-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-68-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[ 
@@ -723,7 +851,7 @@ dem_crop &lt;- crop(dem, ham_sp)
 dem_mask &lt;- mask(dem_crop, ham_sp)
 ```
 
-![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-64-1.png)&lt;!-- --&gt;
+![](Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -734,39 +862,69 @@ class: inverse, center, middle
 ## rasterVis
 
 - https://oscarperpinan.github.io/rastervis/
-- http://www.colorbrewer.org; 
+- http://www.colorbrewer.org
 
 
 ```r
 library('rasterVis')
 my_theme &lt;- rasterTheme(region=brewer.pal('RdYlGn', n = 9))
 p &lt;- levelplot(dem_crop, margin = FALSE, par.settings = my_theme)
-p + layer(sp.lines(ham_sp, lwd = 1.4, col = 'black'))
+p &lt;- p + layer(sp.lines(ham_sp, lwd = 3, col = 'darkgrey'))
+p + layer(sp.points(ham_cities_sp, pch = 19, col = 'black'))
 ```
 
-&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-65-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-71-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 ## tmap
 
+- https://cran.r-project.org/web/packages/tmap/vignettes/tmap-nutshell.html
+
+
+```r
+library('tmap')
+tm_shape(wrld, projection="wintri") +
+        tm_polygons("lifeExp", style="pretty", palette="RdYlGn",
+                    auto.palette.mapping=FALSE, title=c("Life expactancy")) +
+        tm_style_grey()
+```
+
+&lt;img src="Intro_to_spatial_analysis_files/figure-html/unnamed-chunk-72-1.png" style="display: block; margin: auto;" /&gt;
+
 ---
 ## leaflet
 
+
+```r
+library('leaflet')
+leaflet(ham_sp) %&gt;%
+        addProviderTiles(providers$Stamen.Watercolor) %&gt;% 
+        # addTiles() %&gt;%
+        addPolygons() %&gt;% 
+        addMarkers(data=ham_cities_sp, popup=~as.character(name))
+```
+
+<div id="htmlwidget-57589a50807d7cfc341f" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
+<!-- widgetframe widget-href="widget_unnamed-chunk-74.html" -->
+<!-- widgetframe libs-href="widget_libs" -->
+<script type="application/json" data-for="htmlwidget-57589a50807d7cfc341f">{"x":{"url":"widget_unnamed-chunk-74.html","options":{"xdomain":"*","allowfullscreen":false}},"evals":[],"jsHooks":[]}</script>
+
 ---
 class: inverse, center, middle
-## Spatial data
+## Spatial data sources
 
 ---
-## Spatial data
+## Spatial data sources
 
+- [The osmdata package](https://github.com/osmdatar/osmdata) - for downloading OpenStreetMap data
 - [The tigirs package](https://github.com/walkerke/tigris) - Census TIGER/Line shapefiles in R 
+- [The USAboundaries package](https://github.com/ropensci/usaboundaries/) - contemporary state, county, and congressional district boundaries for the United States of America, as well as historical boundaries from 1629 to 2000 for states and counties
 - [The rnaturalearth package](https://github.com/ropenscilabs/rnaturalearth) -  Natural Earth map data
 - [The MODIStsp package](https://github.com/lbusett/MODIStsp) - automatic download and preprocessing of MODIS Land Products Time Series
 - [The rWBclimate](https://github.com/ropensci/rWBclimate) - the World Bank climate data
 - [The GSODR package](https://github.com/ropensci/GSODR) - Global Summary Daily Weather Data
-- [The hddtools package](https://github.com/ropensci/hddtools/) - Hydrological Data Discovery Tools
 - [The rnoaa package](https://github.com/ropensci/rnoaa/) - an R interface to many NOAA data sources
-- [The USAboundaries package](https://github.com/ropensci/usaboundaries/) - contemporary state, county, and congressional district boundaries for the United States of America, as well as historical boundaries from 1629 to 2000 for states and counties
+- [The hddtools package](https://github.com/ropensci/hddtools/) - Hydrological Data Discovery Tools
 - [The spData package](https://github.com/Nowosad/spData) - datasets for spatial analysis
 
 ---
@@ -776,16 +934,17 @@ class: inverse, center, middle
 ---
 ## Resources
 
-- [Documentation of the sf package](https://edzer.github.io/sfr/articles/sf1.html)
-- [HOW-TO: Mapping in R just got a whole lot easier](http://www.computerworld.com/article/3175623/data-analytics/mapping-in-r-just-got-a-whole-lot-easier.html)
-- [Spatial analysis in R with the sf package](https://cdn.rawgit.com/rhodyrstats/geospatial_with_sf/bc2b17cf/geospatial_with_sf.html)
-- [Tidy spatial data in R: using dplyr, tidyr, and ggplot2 with sf](http://strimas.com/r/tidy-sf/)
-- [Introduction to Working With Raster Data in R](http://neondataskills.org/tutorial-series/raster-data-series/)
-- [Map and analyze raster data in R](http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/)
-- [The Visual Raster Cheat Sheet](http://rpubs.com/etiennebr/visualraster)
+- [sf vignette](https://edzer.github.io/sfr/articles/) - documentation of the **sf** package
+- [HOW-TO: Mapping in R just got a whole lot easier](http://www.computerworld.com/article/3175623/data-analytics/mapping-in-r-just-got-a-whole-lot-easier.html) - an introduction to mapping using the sf package
+- [Spatial analysis in R with the sf package](https://cdn.rawgit.com/rhodyrstats/geospatial_with_sf/bc2b17cf/geospatial_with_sf.html) -  an introduction to spatial analysis using the sf package
+- [Tidy spatial data in R: using dplyr, tidyr, and ggplot2 with sf](http://strimas.com/r/tidy-sf/) 
+- [Introduction to Working With Raster Data in R](http://neondataskills.org/tutorial-series/raster-data-series/) - a series of introductory tutorials to the **raster** package
+- [Map and analyze raster data in R](http://zevross.com/blog/2015/03/30/map-and-analyze-raster-data-in-r/) - examples of how to work with raster data in R 
+- [The Visual Raster Cheat Sheet](http://rpubs.com/etiennebr/visualraster) - great illustrations of some operations of the **raster** package
 - [Introduction to rasterVis](https://rpubs.com/alobo/rasterVis_Intro1)
-- [Leaflet for R](http://rstudio.github.io/leaflet/)
-- [Spatial Data Analysis and Modeling with R](http://rspatial.org/index.html)
+- [Leaflet for R](http://rstudio.github.io/leaflet/)  - documentation of the **leaflet** package
+- [Spatial Data Analysis and Modeling with R](http://rspatial.org/index.html) - materials to learn about spatial data analysis and modeling with R
+- [Creating-maps-in-R](https://github.com/Robinlovelace/Creating-maps-in-R) - introductory tutorial on graphical display of geographical information in R
 - [Downloading and plotting MODIS Chlorophyll-a data](http://clarkrichards.org/r/oce/modis/chl/sp/raster/2017/03/25/modis-chl-data/)
 
 &lt;!-- our book?? --&gt;
