@@ -34,5 +34,7 @@
 - [dem](https://github.com/Nowosad/Intro_to_spatial_analysis/raw/master/data/srtm.tif)
 
 <br>
+
 ![](https://licensebuttons.net/l/by-nc/4.0/88x31.png)
+
 This work is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).
