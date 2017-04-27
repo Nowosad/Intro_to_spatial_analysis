@@ -2,7 +2,7 @@
 
 ## Slides
 
-- [Slides are available here](https://cdn.rawgit.com/Nowosad/Intro_to_spatial_analysis/master/Intro_to_spatial_analysis.html)
+- [Slides are available here](https://cdn.rawgit.com/Nowosad/Intro_to_spatial_analysis/05676e29/Intro_to_spatial_analysis.html)
 - [The code is available here](https://raw.githubusercontent.com/Nowosad/Intro_to_spatial_analysis/master/Intro_to_spatial_analysis.R)
 
 
