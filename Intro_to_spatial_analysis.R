@@ -1,8 +1,3 @@
-## ----setup, include=FALSE------------------------------------------------
-library(raster)
-library(tidyverse)
-library(sf)
-
 ## ---- eval=FALSE---------------------------------------------------------
 ## devtools::install_github('edzer/sfr') # development version
 
@@ -25,11 +20,17 @@ ham_cities <- read.csv('data/hamiltion_cities.csv')
 ham_cities_sf <- st_as_sf(ham_cities, coords = c("X","Y"))
 ham_cities_sf
 
+## ---- warning=FALSE, results='hide', echo=FALSE--------------------------
+file.remove(c('data/new_wrld.shp', 'data/new_wrld.gpkg'))
+
 ## ---- warning=FALSE------------------------------------------------------
 st_write(wrld, 'data/new_wrld.shp')
 
 ## ---- warning=FALSE------------------------------------------------------
 st_write(wrld, 'data/new_wrld.gpkg')
+
+## ---- warning=FALSE, results='hide', echo=FALSE--------------------------
+file.remove(c('data/new_wrld.shp', 'data/new_wrld.gpkg'))
 
 ## ------------------------------------------------------------------------
 class(wrld)
@@ -38,12 +39,12 @@ class(wrld)
 wrld[1:2, 1:3]
 
 ## ---- eval=FALSE---------------------------------------------------------
-## head(wrld)
-## nrow(wrld)
-## ncol(wrld)
-## wrld[, c(1, 3)]
-## wrld[1:5, 2]
-## wrld[c(5, 10, 15), ]
+head(wrld)
+nrow(wrld)
+ncol(wrld)
+wrld[, c(1, 3)]
+wrld[1:5, 2]
+wrld[c(5, 10, 15), ]
 
 ## ------------------------------------------------------------------------
 wrld_df <- st_set_geometry(wrld, NULL)
@@ -98,6 +99,9 @@ wrld_sum1[1:3, ]
 wrld_set3410 <- st_set_crs(wrld, 3410)
 st_crs(wrld_set3410)
 
+## ----echo=FALSE, eval=FALSE----------------------------------------------
+plot(wrld_set3410[0]);plot(wrld[0])
+
 ## ------------------------------------------------------------------------
 st_crs(ham_cities_sf)
 
@@ -109,17 +113,14 @@ st_crs(ham_cities_sf)
 wrld_3410 <- st_transform(wrld, 3410)
 st_crs(wrld_3410)
 
-## ---- eval=FALSE---------------------------------------------------------
-## plot(wrld[0])
+## ----echo=FALSE, eval=FALSE----------------------------------------------
+plot(wrld_3410[0]);plot(wrld[0])
 
 ## ---- eval=FALSE---------------------------------------------------------
-## plot(wrld["pop"])
+plot(wrld[0])
 
-## ---- echo=FALSE, message=FALSE, warning=FALSE, results='hide'-----------
-png('figs/plot_compare.png', width = 800, height = 300)
-par(mfrow = c(1, 2), mar=c(0,0,1,0))
-plot(wrld[0]);plot(wrld["pop"])
-dev.off()
+## ---- eval=FALSE---------------------------------------------------------
+plot(wrld["pop"])
 
 ## ------------------------------------------------------------------------
 wrld_sp <- as(wrld, 'Spatial')
@@ -163,7 +164,7 @@ values_dem <- getValues(dem)
 values_dem[1:50]
 
 ## ---- eval=FALSE---------------------------------------------------------
-## getValues(dem, row = 5)
+getValues(dem, row = 5)
 
 ## ------------------------------------------------------------------------
 new_values <- runif(864000, min=150, max=300) # pseudo-random number generator
@@ -200,6 +201,9 @@ crs(dem_set3410)
 
 ## ------------------------------------------------------------------------
 dem3410 <- projectRaster(dem, crs="+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs")
+
+## ----echo=FALSE, eval=FALSE----------------------------------------------
+plot(dem);plot(dem3410)
 
 ## ---- fig.align='center'-------------------------------------------------
 plot(dem)
@@ -251,9 +255,10 @@ tm_shape(wrld, projection="wintri") +
         tm_style_grey()
 
 ## ---- eval=FALSE---------------------------------------------------------
-## library('leaflet')
-## leaflet(ham_sp) %>%
-##         addProviderTiles(providers$Stamen.Watercolor) %>%
-##         # addTiles() %>%
-##         addPolygons() %>%
-##         addMarkers(data=ham_cities_sp, popup=~as.character(name))
+library('leaflet')
+leaflet(ham_sp) %>%
+        addProviderTiles(providers$Stamen.Watercolor) %>%
+        # addTiles() %>%
+        addPolygons() %>%
+        addMarkers(data=ham_cities_sp, popup=~as.character(name))
+
