@@ -4,10 +4,11 @@
     <title>Intro to spatial analysis</title>
     <meta charset="utf-8">
     <meta name="author" content="Jakub Nowosad  nowosad.jakub@gmail.com" />
-    <meta name="date" content="2017-04-27" />
+    <meta name="date" content="2017-04-26" />
     <link href="libs/remark-css/example.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
-    <script src="libs/pymjs/pym.v1.min.js"></script>
+    <script src="libs/blazy/blazy.min.js"></script>
+    <script src="libs/pymjs/pym.v1.js"></script>
     <script src="libs/widgetframe-binding/widgetframe.js"></script>
     <link rel="stylesheet" href="mytheme.css" type="text/css" />
   </head>
@@ -17,7 +18,7 @@ class: center, middle, inverse, title-slide
 
 # Intro to spatial analysis
 ### Jakub Nowosad <br><a href="mailto:nowosad.jakub@gmail.com">nowosad.jakub@gmail.com</a>
-### 2017-04-27
+### 2017-04-26
 
 ---
 
@@ -29,7 +30,7 @@ class: center, middle, inverse, title-slide
 - R has powerful GIS capabilities due to many additional packages - see [CRAN Task View: Analysis of Spatial Data](https://cran.r-project.org/web/views/Spatial.html) and [CRAN Task View: Handling and Analyzing Spatio-Temporal Data](https://cran.r-project.org/web/views/SpatioTemporal.html)
 - **sf** and **sp** are the most important R packages to handle vector data; **sf** is a successor of **sp**, but it's still evolving. Moreover, many other R packages depend on the functions and classes for the **sp** package 
 - **raster** is an extension of spatial data classes to work with rasters
-- there are many ways to vizualize spatial data in R, for example **ggplot2**, **rasterVis**, **tmap**, **leaflet**, and **mapview** packages
+- there are many ways to visualize spatial data in R, for example **ggplot2**, **rasterVis**, **tmap**, **leaflet**, and **mapview** packages
 - it is easy to connect R with a GIS software - GRASS GIS (**rgrass7**), SAGA (**RSAGA**), QGIS (**RQGIS**), and ArcGIS (**arcgisbinding**)
 
 ---
@@ -73,7 +74,6 @@ wrld &lt;- st_read('data/wrld.shp')
 
 ```
 ## Reading layer `wrld' from data source `/home/jn/Documents/Intro_to_spatial_data/data/wrld.shp' using driver `ESRI Shapefile'
-## converted into: POLYGON
 ## Simple feature collection with 177 features and 10 fields
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
@@ -89,7 +89,6 @@ ham &lt;- st_read('data/hamilton_county.gpkg')
 
 ```
 ## Reading layer `hamilton_county.gpkg' from data source `/home/jn/Documents/Intro_to_spatial_data/data/hamilton_county.gpkg' using driver `GPKG'
-## converted into: POLYGON
 ## Simple feature collection with 1 feature and 17 fields
 ## geometry type:  POLYGON
 ## dimension:      XY
@@ -119,26 +118,26 @@ ham_cities_sf
 ## bbox:           xmin: -84.81995 ymin: 39.07862 xmax: -84.26384 ymax: 39.29034
 ## epsg (SRID):    NA
 ## proj4string:    NA
-##             name place                      geometry
-## 1          Delhi  town POINT(-84.6052225 39.0950595)
-## 2        Milford  town  POINT(-84.2958988 39.174625)
-## 3      Covington  town  POINT(-84.508371 39.0836224)
-## 4       Harrison  town POINT(-84.8199516 39.2619993)
-## 5     Cincinnati  city POINT(-84.5124602 39.1014537)
-## 6     Springdale  town  POINT(-84.4852213 39.287002)
-## 7       Sycamore  town  POINT(-84.347427 39.2800883)
-## 8        Norwood  town POINT(-84.4596641 39.1556149)
-## 9       Loveland  town POINT(-84.2638406 39.2689562)
-## 10   Fort Thomas  town POINT(-84.4483432 39.0786242)
-## 11 Saint Bernard  town POINT(-84.4985541 39.1670033)
-## 12    Montgomery  town POINT(-84.3539662 39.2282432)
-## 13   Forest Park  town POINT(-84.5041108 39.2903353)
-## 14      Blue Ash  town POINT(-84.3782817 39.2320073)
-## 15        Ludlow  town POINT(-84.5474435 39.0925598)
-## 16   Sharonville  town POINT(-84.4132779 39.2681145)
-## 17       Reading  town POINT(-84.4421641 39.2236694)
-## 18      Bellevue  town POINT(-84.4826482 39.1067078)
-## 19       Newport  town POINT(-84.4919524 39.0889469)
+##             name place                       geometry
+## 1          Delhi  town POINT (-84.6052225 39.0950595)
+## 2        Milford  town  POINT (-84.2958988 39.174625)
+## 3      Covington  town  POINT (-84.508371 39.0836224)
+## 4       Harrison  town POINT (-84.8199516 39.2619993)
+## 5     Cincinnati  city POINT (-84.5124602 39.1014537)
+## 6     Springdale  town  POINT (-84.4852213 39.287002)
+## 7       Sycamore  town  POINT (-84.347427 39.2800883)
+## 8        Norwood  town POINT (-84.4596641 39.1556149)
+## 9       Loveland  town POINT (-84.2638406 39.2689562)
+## 10   Fort Thomas  town POINT (-84.4483432 39.0786242)
+## 11 Saint Bernard  town POINT (-84.4985541 39.1670033)
+## 12    Montgomery  town POINT (-84.3539662 39.2282432)
+## 13   Forest Park  town POINT (-84.5041108 39.2903353)
+## 14      Blue Ash  town POINT (-84.3782817 39.2320073)
+## 15        Ludlow  town POINT (-84.5474435 39.0925598)
+## 16   Sharonville  town POINT (-84.4132779 39.2681145)
+## 17       Reading  town POINT (-84.4421641 39.2236694)
+## 18      Bellevue  town POINT (-84.4826482 39.1067078)
+## 19       Newport  town POINT (-84.4919524 39.0889469)
 ```
 
 ---
@@ -164,7 +163,7 @@ st_write(wrld, 'data/new_wrld.gpkg')
 ```
 
 ```
-## Writing layer `new_wrld.gpkg' to data source `data/new_wrld.gpkg' using driver `GPKG'
+## Writing layer `new_wrld' to data source `data/new_wrld.gpkg' using driver `GPKG'
 ## features:       177
 ## fields:         10
 ## geometry type:  Multi Polygon
@@ -199,8 +198,8 @@ wrld[1:2, 1:3]
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
 ##   iso_a2   name_long continent                       geometry
-## 1     AF Afghanistan      Asia MULTIPOLYGON(((61.210817091...
-## 2     AO      Angola    Africa MULTIPOLYGON(((16.326528354...
+## 1     AF Afghanistan      Asia MULTIPOLYGON (((61.21081709...
+## 2     AO      Angola    Africa MULTIPOLYGON (((16.32652835...
 ```
 
 ---
@@ -256,10 +255,10 @@ wrld_sel &lt;- select(wrld, name_long, area_km2)
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
 ##              name_long   area_km2                       geometry
-## 1          Afghanistan  652270.07 MULTIPOLYGON(((61.210817091...
-## 2               Angola 1245463.75 MULTIPOLYGON(((16.326528354...
-## 3              Albania   29694.80 MULTIPOLYGON(((20.590247430...
-## 4 United Arab Emirates   79880.74 MULTIPOLYGON(((51.579518670...
+## 1          Afghanistan  652270.07 MULTIPOLYGON (((61.21081709...
+## 2               Angola 1245463.75 MULTIPOLYGON (((16.32652835...
+## 3              Albania   29694.80 MULTIPOLYGON (((20.59024743...
+## 4 United Arab Emirates   79880.74 MULTIPOLYGON (((51.57951867...
 ```
 
 ---
@@ -289,9 +288,9 @@ wrld_arr &lt;- arrange(wrld, area_km2)
 ## 2 Sovereign country 3786.365      NA       NA        NA
 ## 3          Disputed 5037.104 4294682 72.90402  4319.528
 ##                         geometry
-## 1 MULTIPOLYGON(((6.0430733577...
-## 2 MULTIPOLYGON(((32.731780226...
-## 3 MULTIPOLYGON(((35.545665317...
+## 1 MULTIPOLYGON (((6.043073357...
+## 2 MULTIPOLYGON (((32.73178022...
+## 3 MULTIPOLYGON (((35.54566531...
 ```
 
 ---
@@ -321,9 +320,9 @@ wrld_fil &lt;- filter(wrld, pop &lt; 297517)
 ## 2        Dependency   23219.01 268000 77.57317        NA
 ## 3 Sovereign country    7490.04 258883 71.91832  2891.973
 ##                         geometry
-## 1 MULTIPOLYGON(((-46.76379 82...
-## 2 MULTIPOLYGON(((165.77998986...
-## 3 MULTIPOLYGON(((167.84487674...
+## 1 MULTIPOLYGON (((-46.76379 8...
+## 2 MULTIPOLYGON (((165.7799898...
+## 3 MULTIPOLYGON (((167.8448767...
 ```
 
 ---
@@ -353,9 +352,9 @@ wrld_mut &lt;- mutate(wrld, pop_density = pop/area_km2)
 ## 2 1245463.7 24227524 52.26688  6955.960    19.45261
 ## 3   29694.8  2893654 77.83046 10698.525    97.44649
 ##                         geometry
-## 1 MULTIPOLYGON(((61.210817091...
-## 2 MULTIPOLYGON(((16.326528354...
-## 3 MULTIPOLYGON(((20.590247430...
+## 1 MULTIPOLYGON (((61.21081709...
+## 2 MULTIPOLYGON (((16.32652835...
+## 3 MULTIPOLYGON (((20.59024743...
 ```
 
 ---
@@ -372,8 +371,14 @@ wrld_sum1 &lt;- summarize(wrld, pop_sum = sum(pop, na.rm = TRUE),
 
 
 ```
-##      pop_sum pop_mean pop_median
-## 1 7208968708 42910528   10521458
+## Simple feature collection with 1 feature and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##      pop_sum pop_mean pop_median                       geometry
+## 1 7208968708 42910528   10521458 MULTIPOLYGON (((-159.208183...
 ```
 
 
@@ -388,12 +393,12 @@ wrld_sum1 &lt;- wrld %&gt;%
 
 ```
 ## Simple feature collection with 3 features and 4 fields
-## geometry type:  GEOMETRY
+## geometry type:  MULTIPOLYGON
 ## dimension:      XY
 ## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 55.38525
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-## # A tibble: 3 × 5
+## # A tibble: 3 x 5
 ##    continent    pop_sum pop_mean pop_median          geometry
 ##       &lt;fctr&gt;      &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;  &lt;simple_feature&gt;
 ## 1     Africa 1147005839 23895955   14129805 &lt;MULTIPOLYGON...&gt;
@@ -413,14 +418,9 @@ st_crs(wrld_set3410)
 ```
 
 ```
-## $epsg
-## [1] 3410
-## 
-## $proj4string
-## [1] "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
-## 
-## attr(,"class")
-## [1] "crs"
+## Coordinate Reference System:
+##   EPSG: 3410 
+##   proj4string: "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
 ```
 
 
@@ -437,14 +437,7 @@ st_crs(ham_cities_sf)
 ```
 
 ```
-## $epsg
-## [1] NA
-## 
-## $proj4string
-## [1] NA
-## 
-## attr(,"class")
-## [1] "crs"
+## Coordinate Reference System: NA
 ```
 
 
@@ -454,14 +447,9 @@ st_crs(ham_cities_sf)
 ```
 
 ```
-## $epsg
-## [1] 4326
-## 
-## $proj4string
-## [1] "+proj=longlat +datum=WGS84 +no_defs"
-## 
-## attr(,"class")
-## [1] "crs"
+## Coordinate Reference System:
+##   EPSG: 4326 
+##   proj4string: "+proj=longlat +datum=WGS84 +no_defs"
 ```
 
 ---
@@ -476,14 +464,9 @@ st_crs(wrld_3410)
 ```
 
 ```
-## $epsg
-## [1] 3410
-## 
-## $proj4string
-## [1] "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
-## 
-## attr(,"class")
-## [1] "crs"
+## Coordinate Reference System:
+##   EPSG: 3410 
+##   proj4string: "+proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs"
 ```
 
 
@@ -845,26 +828,26 @@ ham_cities_sf
 ## bbox:           xmin: -84.81995 ymin: 39.07862 xmax: -84.26384 ymax: 39.29034
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-##             name place                      geometry dem
-## 1          Delhi  town POINT(-84.6052225 39.0950595) 276
-## 2        Milford  town  POINT(-84.2958988 39.174625) 160
-## 3      Covington  town  POINT(-84.508371 39.0836224) 157
-## 4       Harrison  town POINT(-84.8199516 39.2619993) 161
-## 5     Cincinnati  city POINT(-84.5124602 39.1014537) 188
-## 6     Springdale  town  POINT(-84.4852213 39.287002) 226
-## 7       Sycamore  town  POINT(-84.347427 39.2800883) 260
-## 8        Norwood  town POINT(-84.4596641 39.1556149) 202
-## 9       Loveland  town POINT(-84.2638406 39.2689562) 184
-## 10   Fort Thomas  town POINT(-84.4483432 39.0786242) 261
-## 11 Saint Bernard  town POINT(-84.4985541 39.1670033) 171
-## 12    Montgomery  town POINT(-84.3539662 39.2282432) 243
-## 13   Forest Park  town POINT(-84.5041108 39.2903353) 258
-## 14      Blue Ash  town POINT(-84.3782817 39.2320073) 260
-## 15        Ludlow  town POINT(-84.5474435 39.0925598) 165
-## 16   Sharonville  town POINT(-84.4132779 39.2681145) 178
-## 17       Reading  town POINT(-84.4421641 39.2236694) 173
-## 18      Bellevue  town POINT(-84.4826482 39.1067078) 162
-## 19       Newport  town POINT(-84.4919524 39.0889469) 162
+##             name place                       geometry dem
+## 1          Delhi  town POINT (-84.6052225 39.0950595) 276
+## 2        Milford  town  POINT (-84.2958988 39.174625) 160
+## 3      Covington  town  POINT (-84.508371 39.0836224) 157
+## 4       Harrison  town POINT (-84.8199516 39.2619993) 161
+## 5     Cincinnati  city POINT (-84.5124602 39.1014537) 188
+## 6     Springdale  town  POINT (-84.4852213 39.287002) 226
+## 7       Sycamore  town  POINT (-84.347427 39.2800883) 260
+## 8        Norwood  town POINT (-84.4596641 39.1556149) 202
+## 9       Loveland  town POINT (-84.2638406 39.2689562) 184
+## 10   Fort Thomas  town POINT (-84.4483432 39.0786242) 261
+## 11 Saint Bernard  town POINT (-84.4985541 39.1670033) 171
+## 12    Montgomery  town POINT (-84.3539662 39.2282432) 243
+## 13   Forest Park  town POINT (-84.5041108 39.2903353) 258
+## 14      Blue Ash  town POINT (-84.3782817 39.2320073) 260
+## 15        Ludlow  town POINT (-84.5474435 39.0925598) 165
+## 16   Sharonville  town POINT (-84.4132779 39.2681145) 178
+## 17       Reading  town POINT (-84.4421641 39.2236694) 173
+## 18      Bellevue  town POINT (-84.4826482 39.1067078) 162
+## 19       Newport  town POINT (-84.4919524 39.0889469) 162
 ```
 
 ---
@@ -946,10 +929,8 @@ leaflet(ham_sp) %&gt;%
         addMarkers(data=ham_cities_sp, popup=~as.character(name))
 ```
 
-<div id="htmlwidget-a067effe698fcb028445" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
-<!-- widgetframe widget-href="widget_unnamed-chunk-76.html" -->
-<!-- widgetframe libs-href="widget_libs" -->
-<script type="application/json" data-for="htmlwidget-a067effe698fcb028445">{"x":{"url":"widget_unnamed-chunk-76.html","options":{"xdomain":"*","allowfullscreen":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-055ada35701752295318" style="width:100%;height:400px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-055ada35701752295318">{"x":{"url":"Intro_to_spatial_analysis_files/figure-html//widgets/widget_unnamed-chunk-76.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
 
 ---
 class: inverse, center, middle
@@ -997,7 +978,8 @@ class: inverse, center, middle
 "highlightLines": true,
 "countIncrementalSlides": false
 });
-if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});
+(function() {var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler"); if (!r) return; s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }"; d.head.appendChild(s);})();</script>
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -1011,7 +993,7 @@ MathJax.Hub.Config({
 (function () {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src  = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
   if (location.protocol !== 'file:' && /^https?:/.test(script.src))
     script.src  = script.src.replace(/^https?:/, '');
   document.getElementsByTagName('head')[0].appendChild(script);

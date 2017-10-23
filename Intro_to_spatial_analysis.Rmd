@@ -537,7 +537,7 @@ ham_cities_sf
 ---
 ## Crop
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, eval = FALSE}
 library('tigris')
 oh <- counties(state='OH')
 ham0 <- oh %>% 
@@ -617,6 +617,11 @@ leaflet(ham_sp) %>%
 ```{r, echo=FALSE, message=FALSE}
 library(widgetframe)
 library('leaflet')
+l <- leaflet(ham_sp) %>%
+        addProviderTiles(providers$Stamen.Watercolor) %>% 
+        # addTiles() %>%
+        addPolygons() %>% 
+        addMarkers(data=ham_cities_sp, popup=~as.character(name))
 frameWidget(l, height = '400')
 ```
 
